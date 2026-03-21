@@ -109,9 +109,14 @@ def generate(data):
     data_json = json.dumps(data, ensure_ascii=False)
 
     # Build ticker content (duplicate for seamless loop)
-    ticker_titles = [_escape(item.get('title', '')) for item in all_items[:25] if item.get('title')]
-    sep = '&nbsp;&nbsp;&#9670;&nbsp;&nbsp;'
-    ticker_single = sep.join(f'<span class="tick-item">{t}</span>' for t in ticker_titles)
+    ticker_items_data = [(item.get('title',''), item.get('link','')) for item in all_items[:25] if item.get('title')]
+    sep = '&nbsp;&nbsp;<span class="tick-sep">&#9670;</span>&nbsp;&nbsp;'
+    def _tick_item(title, link):
+        t = _escape(title)
+        if link:
+            return f'<a class="tick-item" href="{_escape(link)}" target="_blank">{t}</a>'
+        return f'<span class="tick-item">{t}</span>'
+    ticker_single = sep.join(_tick_item(t, l) for t, l in ticker_items_data)
     ticker_content = ticker_single + '&nbsp;&nbsp;&nbsp;' + sep + '&nbsp;&nbsp;&nbsp;' + ticker_single
 
     # Build news cards HTML
@@ -262,7 +267,7 @@ def generate(data):
       background: var(--light-bg);
       color: var(--text);
       direction: rtl;
-      font-size: 15px;
+      font-size: 17px;
       line-height: 1.5;
     }}
 
@@ -332,7 +337,7 @@ def generate(data):
 
     /* ── NEWS TICKER ── */
     .ticker-wrap {{
-      background: #00877d;
+      background: #00aec8;
       overflow: hidden;
       position: relative;
       height: 36px;
@@ -341,7 +346,7 @@ def generate(data):
       border-bottom: 1px solid rgba(255,255,255,.07);
     }}
     .ticker-badge {{
-      background: #005c54 !important;
+      background: #0082a0 !important;
       position: absolute;
       right: 0;
       top: 0;
@@ -358,7 +363,7 @@ def generate(data):
       letter-spacing: 0.02em;
     }}
     .ticker-badge::after {{
-      background: linear-gradient(to left, #005c54, transparent) !important;
+      background: linear-gradient(to left, #0082a0, transparent) !important;
       content: '';
       position: absolute;
       left: -10px;
@@ -375,12 +380,21 @@ def generate(data):
     .ticker-track {{
       display: inline-block;
       white-space: nowrap;
-      color: rgba(255,255,255,.72);
-      font-size: 0.78rem;
+      color: rgba(255,255,255,.9);
+      font-size: 0.92rem;
+      font-weight: 700;
       will-change: transform;
     }}
-    .tick-item {{ display: inline; }}
-    .tick-sep {{ color: var(--teal); opacity: .7; margin: 0 4px; }}
+    .tick-item {{
+      display: inline;
+      color: white;
+      text-decoration: none;
+    }}
+    a.tick-item:hover {{
+      text-decoration: underline;
+      color: #fef08a;
+    }}
+    .tick-sep {{ color: rgba(255,255,255,.5); margin: 0 4px; }}
 
     /* ── HERO BANNER ── */
     .hero {{
@@ -429,7 +443,7 @@ def generate(data):
     }}
     .hero-tagline {{
       font-size: 1.15rem;
-      color: var(--teal);
+      color: #00aec8;
       font-weight: 700;
       margin-bottom: 14px;
       letter-spacing: 0.01em;

@@ -125,10 +125,27 @@ def _get_summary(url, use_playwright=False):
                 browser = p.chromium.launch(headless=True)
                 page = browser.new_page()
                 page.goto(url, wait_until='networkidle', timeout=20000)
-                page.wait_for_timeout(1500)
+                page.wait_for_timeout(2000)
+                # Try to get a real rendered image via JS (works for SPAs)
+                rendered_image = page.evaluate("""() => {
+                    const og = document.querySelector('meta[property="og:image"]');
+                    if (og && og.content) return og.content;
+                    const skip = ['logo','icon','sprite','favicon','avatar','pixel','track','blank','spacer','header','footer'];
+                    const imgs = Array.from(document.querySelectorAll('img'));
+                    for (const img of imgs) {
+                        const src = img.currentSrc || img.src || '';
+                        if (!src || src.startsWith('data:')) continue;
+                        if (skip.some(k => src.toLowerCase().includes(k))) continue;
+                        if (img.naturalWidth >= 200 && img.naturalHeight >= 150) return src;
+                    }
+                    return '';
+                }""")
                 html = page.content()
                 browser.close()
-            return _parse(html)
+            result = list(_parse(html))
+            if rendered_image and not result[2]:
+                result[2] = rendered_image
+            return tuple(result)
     except Exception:
         pass
     return '', '', ''
@@ -143,8 +160,8 @@ def _enrich_items(items, use_playwright=False):
         link = item.get('link', '')
         if not link:
             continue
-        # Skip if already has a good description
-        if len(item.get('description', '')) > 60:
+        # Skip only if already has both description AND image
+        if len(item.get('description', '')) > 60 and item.get('image_url'):
             continue
         summary, full_text, image_url = _get_summary(link, use_playwright=use_playwright)
         if summary: item['description'] = summary
