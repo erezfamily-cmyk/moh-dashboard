@@ -340,7 +340,7 @@ def generate(data):
       background: #00aec8;
       overflow: hidden;
       position: relative;
-      height: 36px;
+      height: 46px;
       display: flex;
       align-items: center;
       border-bottom: 1px solid rgba(255,255,255,.07);
@@ -354,8 +354,8 @@ def generate(data):
       background: var(--blue);
       display: flex;
       align-items: center;
-      padding: 0 14px;
-      font-size: 0.72rem;
+      padding: 0 18px;
+      font-size: 0.85rem;
       font-weight: 700;
       color: white;
       z-index: 2;
@@ -381,7 +381,7 @@ def generate(data):
       display: inline-block;
       white-space: nowrap;
       color: rgba(255,255,255,.9);
-      font-size: 0.92rem;
+      font-size: 1.02rem;
       font-weight: 700;
       will-change: transform;
     }}
@@ -554,13 +554,13 @@ def generate(data):
       white-space: nowrap;
     }}
     .filter-pill {{
-      padding: 8px 18px;
+      padding: 9px 20px;
       border-radius: 50px;
       border: 1.5px solid var(--border);
       background: var(--white);
       color: var(--secondary);
       font-family: inherit;
-      font-size: 0.88rem;
+      font-size: 0.95rem;
       font-weight: 500;
       cursor: pointer;
       transition: all .15s;
