@@ -554,13 +554,13 @@ def generate(data):
       white-space: nowrap;
     }}
     .filter-pill {{
-      padding: 6px 14px;
+      padding: 8px 18px;
       border-radius: 50px;
       border: 1.5px solid var(--border);
       background: var(--white);
       color: var(--secondary);
       font-family: inherit;
-      font-size: 0.78rem;
+      font-size: 0.88rem;
       font-weight: 500;
       cursor: pointer;
       transition: all .15s;
