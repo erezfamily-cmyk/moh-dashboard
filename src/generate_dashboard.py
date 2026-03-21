@@ -158,7 +158,7 @@ def generate(data):
               <span class="thumb-icon">{icon_svg}</span>
             </div>'''
 
-        new_pill = '<span class="pill-new">חדש</span>' if is_new else ''
+        new_pill = '<span class="pill-new" data-i18n="new_badge">חדש</span>' if is_new else ''
         site_tag = f'<span class="site-tag" style="background:{site_color}15;color:{site_color};border-color:{site_color}30">{_escape(site_name)}</span>'
         date_el = f'<span class="card-date">{_escape(date_str)}</span>' if date_str else ''
 
@@ -167,7 +167,7 @@ def generate(data):
 
         desc_block = f'<p class="card-desc">{desc}</p>' if desc else ''
 
-        read_more = (f'<a href="{_escape(link)}" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>'
+        read_more = (f'<a href="{_escape(link)}" target="_blank" class="btn-read-more"><span data-i18n="read_more">קרא עוד</span> <span class="read-more-arrow" aria-hidden="true">←</span></a>'
                      if link else '')
 
         bookmark_btn = f'''<button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
@@ -407,6 +407,35 @@ def generate(data):
       display: none;
     }}
     .copy-feedback.show {{ display: block; }}
+
+    /* ── LANGUAGE SWITCHER ── */
+    .lang-switcher {{
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      margin-left: auto;
+      margin-right: 16px;
+    }}
+    .lang-btn {{
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.65);
+      font-family: inherit;
+      transition: background .12s, color .12s, border-color .12s;
+      letter-spacing: .02em;
+    }}
+    .lang-btn:hover {{ background: rgba(255,255,255,.15); color: white; border-color: rgba(255,255,255,.35); }}
+    .lang-btn.active {{
+      background: rgba(255,255,255,.22);
+      color: white;
+      border-color: rgba(255,255,255,.5);
+    }}
+    .lang-sep {{ width: 1px; height: 14px; background: rgba(255,255,255,.2); }}
 
     .btn-darkmode {{
       background: rgba(255,255,255,.06);
@@ -887,12 +916,71 @@ def generate(data):
     }}
     .no-results.visible {{ display: block; }}
 
+    /* ── HAMBURGER ── */
+    .toolbar-top-row {{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }}
+    .hamburger-btn {{
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--light-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      padding: 9px 16px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      color: var(--secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background .15s, border-color .15s;
+    }}
+    .hamburger-btn.open {{ border-color: var(--blue); color: var(--blue); }}
+    .toolbar-filters {{
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      flex: 1;
+    }}
+    [data-theme="dark"] .hamburger-btn {{
+      background: #161c2d;
+      border-color: #252e48;
+      color: var(--secondary);
+    }}
+    @media (max-width: 768px) {{
+      .toolbar {{
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 12px 16px;
+      }}
+      .toolbar-top-row {{ gap: 8px; }}
+      .search-wrap {{ flex: 1; }}
+      #search {{ width: 100%; box-sizing: border-box; }}
+      .hamburger-btn {{ display: inline-flex; }}
+      .toolbar-filters {{
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding-top: 12px;
+        margin-top: 12px;
+        border-top: 1px solid var(--border);
+      }}
+      .toolbar-filters.open {{ display: flex; }}
+      .filter-group {{ flex-wrap: wrap; }}
+      .results-count {{ display: none; }}
+    }}
     @media (max-width: 640px) {{
       .top-bar {{ padding: 10px 16px; }}
       .hero {{ padding: 32px 16px 28px; }}
-      .toolbar {{ padding: 12px 16px; }}
       .container {{ padding: 0 12px; margin-top: 20px; }}
-      #search {{ width: 200px; }}
       .hero-stats {{ gap: 10px; }}
     }}
 
@@ -1080,85 +1168,94 @@ def generate(data):
 <div id="progress-bar"></div>
 
 <!-- ACCESSIBILITY TOGGLE -->
-<button id="a11y-toggle" onclick="toggleA11yPanel()" aria-label="פתח תפריט הנגשה" title="הנגשה">
+<button id="a11y-toggle" onclick="toggleA11yPanel()" data-i18n-aria="a11y_open" aria-label="פתח תפריט הנגשה" data-i18n-title="a11y" title="הנגשה">
   &#x267F;
 </button>
 
 <!-- ACCESSIBILITY PANEL -->
-<aside id="a11y-panel" role="dialog" aria-label="תפריט הנגשה" aria-modal="true">
+<aside id="a11y-panel" role="dialog" data-i18n-aria="a11y_panel_label" aria-label="תפריט הנגשה" aria-modal="true">
   <div class="a11y-header">
-    <span>&#x267F; הנגשה</span>
-    <button class="a11y-close" onclick="toggleA11yPanel()" aria-label="סגור">&#x2715;</button>
+    <span>&#x267F; <span data-i18n="a11y">הנגשה</span></span>
+    <button class="a11y-close" onclick="toggleA11yPanel()" data-i18n-aria="close" aria-label="סגור">&#x2715;</button>
   </div>
 
   <div class="a11y-section">
-    <div class="a11y-section-title">גודל טקסט</div>
+    <div class="a11y-section-title" data-i18n="text_size">גודל טקסט</div>
     <div class="font-size-row">
-      <button class="fs-btn" onclick="changeFontSize(-1)" aria-label="הקטן גופן">A-</button>
+      <button class="fs-btn" onclick="changeFontSize(-1)" data-i18n-aria="decrease_font" aria-label="הקטן גופן">A-</button>
       <span id="fs-label">רגיל</span>
-      <button class="fs-btn" onclick="changeFontSize(1)" aria-label="הגדל גופן">A+</button>
+      <button class="fs-btn" onclick="changeFontSize(1)" data-i18n-aria="increase_font" aria-label="הגדל גופן">A+</button>
     </div>
   </div>
 
   <div class="a11y-section">
-    <div class="a11y-section-title">צבע ותצוגה</div>
+    <div class="a11y-section-title" data-i18n="color_display">צבע ותצוגה</div>
     <button class="a11y-btn" id="btn-contrast" onclick="toggleA11y('a11y-contrast', this)">
-      <span class="a11y-icon">&#x25D1;</span> ניגודיות גבוהה
+      <span class="a11y-icon">&#x25D1;</span> <span data-i18n="high_contrast">ניגודיות גבוהה</span>
     </button>
     <button class="a11y-btn" id="btn-grayscale" onclick="toggleA11y('a11y-grayscale', this)">
-      <span class="a11y-icon">&#x25A1;</span> גווני אפור
+      <span class="a11y-icon">&#x25A1;</span> <span data-i18n="grayscale">גווני אפור</span>
     </button>
   </div>
 
   <div class="a11y-section">
-    <div class="a11y-section-title">קריאות</div>
+    <div class="a11y-section-title" data-i18n="readability">קריאות</div>
     <button class="a11y-btn" id="btn-readable" onclick="toggleA11y('a11y-readable', this)">
-      <span class="a11y-icon">&#x1F4C4;</span> גופן קריא (Arial)
+      <span class="a11y-icon">&#x1F4C4;</span> <span data-i18n="readable_font">גופן קריא (Arial)</span>
     </button>
     <button class="a11y-btn" id="btn-spacing" onclick="toggleA11y('a11y-text-spacing', this)">
-      <span class="a11y-icon">&#x21C4;</span> ריווח מוגבר
+      <span class="a11y-icon">&#x21C4;</span> <span data-i18n="more_spacing">ריווח מוגבר</span>
     </button>
     <button class="a11y-btn" id="btn-underline" onclick="toggleA11y('a11y-underline-links', this)">
-      <span class="a11y-icon">&#x1F517;</span> הדגש קישורים
+      <span class="a11y-icon">&#x1F517;</span> <span data-i18n="underline_links">הדגש קישורים</span>
     </button>
   </div>
 
   <div class="a11y-section">
-    <div class="a11y-section-title">ניווט ותנועה</div>
+    <div class="a11y-section-title" data-i18n="nav_motion">ניווט ותנועה</div>
     <button class="a11y-btn" id="btn-focus" onclick="toggleA11y('a11y-highlight-focus', this)">
-      <span class="a11y-icon">&#x25A3;</span> הדגש פוקוס
+      <span class="a11y-icon">&#x25A3;</span> <span data-i18n="highlight_focus">הדגש פוקוס</span>
     </button>
     <button class="a11y-btn" id="btn-no-anim" onclick="toggleA11y('a11y-no-anim', this)">
-      <span class="a11y-icon">&#x23F8;</span> עצור אנימציות
+      <span class="a11y-icon">&#x23F8;</span> <span data-i18n="stop_anim">עצור אנימציות</span>
     </button>
     <button class="a11y-btn" id="btn-cursor" onclick="toggleA11y('a11y-big-cursor', this)">
-      <span class="a11y-icon">&#x1F5B1;</span> סמן גדול
+      <span class="a11y-icon">&#x1F5B1;</span> <span data-i18n="big_cursor">סמן גדול</span>
     </button>
   </div>
 
-  <button class="a11y-reset" onclick="resetA11y()">&#x21BA; איפוס הגדרות הנגשה</button>
+  <button class="a11y-reset" onclick="resetA11y()">&#x21BA; <span data-i18n="reset_a11y">איפוס הגדרות הנגשה</span></button>
 </aside>
 
 <!-- TOP HEADER BAR -->
 <header class="top-bar">
   <img src="https://efsharibari.health.gov.il/media/1070/footer-health_logo.png?width=500" class="moh-logo" alt="משרד הבריאות" onerror="this.style.display='none'">
+  <div class="lang-switcher">
+    <button class="lang-btn active" onclick="setLang('he')" id="lang-he">עב</button>
+    <div class="lang-sep"></div>
+    <button class="lang-btn" onclick="setLang('ar')" id="lang-ar">عر</button>
+    <div class="lang-sep"></div>
+    <button class="lang-btn" onclick="setLang('en')" id="lang-en">EN</button>
+    <div class="lang-sep"></div>
+    <button class="lang-btn" onclick="setLang('ru')" id="lang-ru">РУ</button>
+  </div>
   <div class="top-bar-actions">
-    <button class="btn-top btn-darkmode" onclick="toggleDarkMode()" id="dark-btn" title="מצב לילה">
+    <button class="btn-top btn-darkmode" onclick="toggleDarkMode()" id="dark-btn" data-i18n-title="dark_mode" title="מצב לילה">
       <svg id="dark-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     </button>
     <button class="btn-top" onclick="window.print()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      הדפסה
+      <span data-i18n="print">הדפסה</span>
     </button>
     <button class="btn-top btn-top-primary" onclick="sendEmail()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      מייל
+      <span data-i18n="email">מייל</span>
     </button>
 
     <div class="share-wrap" id="share-wrap">
-      <button class="btn-top" onclick="toggleShareMenu(event)" title="שיתוף">
+      <button class="btn-top" onclick="toggleShareMenu(event)" data-i18n-title="share" title="שיתוף">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        שיתוף
+        <span data-i18n="share">שיתוף</span>
       </button>
       <div class="share-dropdown" id="share-dropdown">
         <button class="share-opt" onclick="shareWhatsApp()">
@@ -1190,14 +1287,14 @@ def generate(data):
           <span class="share-icon" style="background:#64748b">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           </span>
-          העתקת קישור
+          <span data-i18n="copy_link">העתקת קישור</span>
         </button>
-        <div class="copy-feedback" id="copy-feedback">הועתק!</div>
+        <div class="copy-feedback" id="copy-feedback" data-i18n="copied">הועתק!</div>
         <button class="share-opt" id="native-share-btn" onclick="nativeShare()" style="display:none">
           <span class="share-icon" style="background:#6366f1">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
           </span>
-          שיתוף נוסף...
+          <span data-i18n="more_share">שיתוף נוסף...</span>
         </button>
       </div>
     </div>
@@ -1244,27 +1341,27 @@ def generate(data):
   </svg>
 
   <div class="hero-inner">
-    <h1 class="hero-title">עדכוני משרד הבריאות</h1>
-    <p class="hero-tagline">מה התחדש באתרי משרד הבריאות השונים בימים האחרונים?</p>
+    <h1 class="hero-title" data-i18n="title">עדכוני משרד הבריאות</h1>
+    <p class="hero-tagline" data-i18n="tagline">מה התחדש באתרי משרד הבריאות השונים בימים האחרונים?</p>
     <p class="hero-sub">
-      עודכן לאחרונה: <strong>{now}</strong>
+      <span data-i18n="last_updated">עודכן לאחרונה</span>: <strong>{now}</strong>
       <span class="refresh-countdown">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        עדכון בעוד <span class="cd-val" id="cd-val">...</span> דקות
+        <span data-i18n="next_update">עדכון בעוד</span> <span class="cd-val" id="cd-val">...</span> <span data-i18n="minutes">דקות</span>
       </span>
     </p>
     <div class="hero-stats">
       <div class="hero-stat">
         <strong id="stat-total" data-target="{len(all_items)}">0</strong>
-        כתבות וידיעות
+        <span data-i18n="articles">כתבות וידיעות</span>
       </div>
       <div class="hero-stat">
         <strong id="stat-new" data-target="{total_new}">0</strong>
-        פריטים חדשים
+        <span data-i18n="new_items">פריטים חדשים</span>
       </div>
       <div class="hero-stat">
         <strong id="stat-src" data-target="{len(data)}">0</strong>
-        מקורות מידע
+        <span data-i18n="sources">מקורות מידע</span>
       </div>
     </div>
   </div>
@@ -1272,34 +1369,42 @@ def generate(data):
 
 <!-- TOOLBAR -->
 <div class="toolbar">
-  <div class="search-wrap">
-    <span class="search-icon-inner">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    </span>
-    <input type="text" id="search" placeholder="חיפוש בכל הכתבות..." oninput="filterCards()" autocomplete="off">
-  </div>
-  <div class="filter-group">
-    <span class="filter-label">נושא:</span>
-    <button class="filter-pill active" onclick="setTagFilter('', this)">הכל</button>
-    <button class="filter-pill" onclick="setTagFilter('חיסונים', this)">חיסונים</button>
-    <button class="filter-pill" onclick="setTagFilter('בריאות נפש', this)">בריאות נפש</button>
-    <button class="filter-pill" onclick="setTagFilter('ילדים', this)">ילדים</button>
-    <button class="filter-pill" onclick="setTagFilter('חירום', this)">חירום</button>
-    <button class="filter-pill" onclick="setTagFilter('תזונה', this)">תזונה</button>
-  </div>
-  <div class="filter-group">
-    <span class="filter-label">מקור:</span>
-    <button class="filter-pill active-teal" id="site-all-btn" onclick="setSiteFilter('', this)">כל המקורות</button>
-    {site_filter_pills}
-  </div>
-  <div class="filter-group">
-    <button class="filter-pill" id="bookmarks-btn" onclick="toggleBookmarksFilter(this)">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-left:4px"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-      שמורים
+  <div class="toolbar-top-row">
+    <div class="search-wrap">
+      <span class="search-icon-inner">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </span>
+      <input type="text" id="search" data-i18n-placeholder="search_placeholder" placeholder="חיפוש בכל הכתבות..." oninput="filterCards()" autocomplete="off">
+    </div>
+    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleFilters(this)" aria-label="פתח פילטרים">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      סינון
     </button>
+    <span class="results-count" id="results-count"><span data-i18n="showing">מוצגות</span> <strong>{len(all_items)}</strong> <span data-i18n="articles_short">כתבות</span></span>
   </div>
-  {"<span class='new-badge-total'>&#10022; " + str(total_new) + " פריטים חדשים</span>" if total_new > 0 else ""}
-  <span class="results-count" id="results-count">מוצגות <strong>{len(all_items)}</strong> כתבות</span>
+  <div class="toolbar-filters" id="toolbar-filters">
+    <div class="filter-group">
+      <span class="filter-label" data-i18n="topic_label">נושא:</span>
+      <button class="filter-pill active" onclick="setTagFilter('', this)" data-i18n="all">הכל</button>
+      <button class="filter-pill" onclick="setTagFilter('חיסונים', this)" data-i18n="f_vaccines">חיסונים</button>
+      <button class="filter-pill" onclick="setTagFilter('בריאות נפש', this)" data-i18n="f_mental">בריאות נפש</button>
+      <button class="filter-pill" onclick="setTagFilter('ילדים', this)" data-i18n="f_children">ילדים</button>
+      <button class="filter-pill" onclick="setTagFilter('חירום', this)" data-i18n="f_emergency">חירום</button>
+      <button class="filter-pill" onclick="setTagFilter('תזונה', this)" data-i18n="f_nutrition">תזונה</button>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label" data-i18n="source_label">מקור:</span>
+      <button class="filter-pill active-teal" id="site-all-btn" onclick="setSiteFilter('', this)" data-i18n="all_sources">כל המקורות</button>
+      {site_filter_pills}
+    </div>
+    <div class="filter-group">
+      <button class="filter-pill" id="bookmarks-btn" onclick="toggleBookmarksFilter(this)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-left:4px"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        <span data-i18n="saved">שמורים</span>
+      </button>
+    </div>
+    {"<span class='new-badge-total' data-i18n-new-total='1'>&#10022; " + str(total_new) + " <span data-i18n=\"new_items\">פריטים חדשים</span></span>" if total_new > 0 else ""}
+  </div>
 </div>
 
 <!-- MAIN GRID -->
@@ -1307,8 +1412,8 @@ def generate(data):
   <div class="grid" id="grid">
     {cards_html}
   </div>
-  <div class="no-results" id="no-results">לא נמצאו תוצאות לחיפוש זה</div>
-  <p class="page-footer">נגרד אוטומטית מאתרי משרד הבריאות &middot; {now}</p>
+  <div class="no-results" id="no-results" data-i18n="no_results">לא נמצאו תוצאות לחיפוש זה</div>
+  <p class="page-footer"><span data-i18n="footer">נגרד אוטומטית מאתרי משרד הבריאות</span> &middot; {now}</p>
 </main>
 
 <script>
@@ -1317,6 +1422,199 @@ def generate(data):
   let activeSite = '';
   let showBookmarksOnly = false;
   let bookmarks = JSON.parse(localStorage.getItem('moh_bookmarks') || '[]');
+
+  // ── TRANSLATIONS ──
+  const TRANSLATIONS = {{
+    he: {{
+      title: 'עדכוני משרד הבריאות',
+      tagline: 'מה התחדש באתרי משרד הבריאות השונים בימים האחרונים?',
+      last_updated: 'עודכן לאחרונה', next_update: 'עדכון בעוד', minutes: 'דקות',
+      articles: 'כתבות וידיעות', new_items: 'פריטים חדשים', sources: 'מקורות מידע',
+      print: 'הדפסה', email: 'מייל', share: 'שיתוף', dark_mode: 'מצב לילה',
+      copy_link: 'העתקת קישור', copied: 'הועתק!', more_share: 'שיתוף נוסף...',
+      search_placeholder: 'חיפוש בכל הכתבות...',
+      topic_label: 'נושא:', source_label: 'מקור:',
+      all: 'הכל', all_sources: 'כל המקורות', saved: 'שמורים',
+      f_vaccines: 'חיסונים', f_mental: 'בריאות נפש', f_children: 'ילדים',
+      f_emergency: 'חירום', f_nutrition: 'תזונה',
+      showing: 'מוצגות', articles_short: 'כתבות',
+      no_results: 'לא נמצאו תוצאות לחיפוש זה',
+      footer: 'נגרד אוטומטית מאתרי משרד הבריאות',
+      new_badge: 'חדש', read_more: 'קרא עוד', read_more_arrow: '←',
+      a11y: 'הנגשה', a11y_open: 'פתח תפריט הנגשה', a11y_panel_label: 'תפריט הנגשה',
+      close: 'סגור', text_size: 'גודל טקסט', color_display: 'צבע ותצוגה',
+      readability: 'קריאות', nav_motion: 'ניווט ותנועה',
+      high_contrast: 'ניגודיות גבוהה', grayscale: 'גווני אפור',
+      readable_font: 'גופן קריא (Arial)', more_spacing: 'ריווח מוגבר',
+      underline_links: 'הדגש קישורים', highlight_focus: 'הדגש פוקוס',
+      stop_anim: 'עצור אנימציות', big_cursor: 'סמן גדול',
+      reset_a11y: 'איפוס הגדרות הנגשה',
+      decrease_font: 'הקטן גופן', increase_font: 'הגדל גופן',
+      font_labels: ['קטן מאוד','קטן','רגיל','בינוני','גדול','גדול מאוד','ענק'],
+      dir: 'rtl', lang: 'he'
+    }},
+    ar: {{
+      title: 'تحديثات وزارة الصحة',
+      tagline: 'ما الجديد في مواقع وزارة الصحة المختلفة؟',
+      last_updated: 'آخر تحديث', next_update: 'تحديث خلال', minutes: 'دقائق',
+      articles: 'مقالات وأخبار', new_items: 'عناصر جديدة', sources: 'مصادر المعلومات',
+      print: 'طباعة', email: 'بريد', share: 'مشاركة', dark_mode: 'الوضع الليلي',
+      copy_link: 'نسخ الرابط', copied: 'تم النسخ!', more_share: 'خيارات إضافية...',
+      search_placeholder: 'البحث في جميع المقالات...',
+      topic_label: 'الموضوع:', source_label: 'المصدر:',
+      all: 'الكل', all_sources: 'جميع المصادر', saved: 'المحفوظات',
+      f_vaccines: 'تطعيمات', f_mental: 'الصحة النفسية', f_children: 'أطفال',
+      f_emergency: 'طوارئ', f_nutrition: 'تغذية',
+      showing: 'يُعرض', articles_short: 'مقالات',
+      no_results: 'لا توجد نتائج لهذا البحث',
+      footer: 'يُجمع تلقائيًا من مواقع وزارة الصحة',
+      new_badge: 'جديد', read_more: 'اقرأ أكثر', read_more_arrow: '→',
+      a11y: 'إمكانية الوصول', a11y_open: 'فتح قائمة إمكانية الوصول', a11y_panel_label: 'قائمة إمكانية الوصول',
+      close: 'إغلاق', text_size: 'حجم النص', color_display: 'اللون والعرض',
+      readability: 'قابلية القراءة', nav_motion: 'التنقل والحركة',
+      high_contrast: 'تباين عالٍ', grayscale: 'تدرج الرمادي',
+      readable_font: 'خط سهل القراءة (Arial)', more_spacing: 'تباعد أكبر',
+      underline_links: 'تسطير الروابط', highlight_focus: 'تمييز التركيز',
+      stop_anim: 'إيقاف الحركات', big_cursor: 'مؤشر كبير',
+      reset_a11y: 'إعادة تعيين إمكانية الوصول',
+      decrease_font: 'تصغير الخط', increase_font: 'تكبير الخط',
+      font_labels: ['صغير جداً','صغير','عادي','متوسط','كبير','كبير جداً','ضخم'],
+      dir: 'rtl', lang: 'ar'
+    }},
+    en: {{
+      title: 'Ministry of Health Updates',
+      tagline: "What's new across the Ministry of Health's websites?",
+      last_updated: 'Last updated', next_update: 'Next update in', minutes: 'minutes',
+      articles: 'Articles & News', new_items: 'new items', sources: 'Sources',
+      print: 'Print', email: 'Email', share: 'Share', dark_mode: 'Night Mode',
+      copy_link: 'Copy Link', copied: 'Copied!', more_share: 'More options...',
+      search_placeholder: 'Search all articles...',
+      topic_label: 'Topic:', source_label: 'Source:',
+      all: 'All', all_sources: 'All Sources', saved: 'Saved',
+      f_vaccines: 'Vaccines', f_mental: 'Mental Health', f_children: 'Children',
+      f_emergency: 'Emergency', f_nutrition: 'Nutrition',
+      showing: 'Showing', articles_short: 'articles',
+      no_results: 'No results found for this search',
+      footer: 'Automatically scraped from Ministry of Health websites',
+      new_badge: 'New', read_more: 'Read more', read_more_arrow: '→',
+      a11y: 'Accessibility', a11y_open: 'Open accessibility menu', a11y_panel_label: 'Accessibility menu',
+      close: 'Close', text_size: 'Text Size', color_display: 'Color & Display',
+      readability: 'Readability', nav_motion: 'Navigation & Motion',
+      high_contrast: 'High Contrast', grayscale: 'Grayscale',
+      readable_font: 'Readable Font (Arial)', more_spacing: 'Increased Spacing',
+      underline_links: 'Underline Links', highlight_focus: 'Highlight Focus',
+      stop_anim: 'Stop Animations', big_cursor: 'Large Cursor',
+      reset_a11y: 'Reset Accessibility Settings',
+      decrease_font: 'Decrease font', increase_font: 'Increase font',
+      font_labels: ['Tiny','Small','Normal','Medium','Large','X-Large','Huge'],
+      dir: 'ltr', lang: 'en'
+    }},
+    ru: {{
+      title: 'Обновления Министерства здравоохранения',
+      tagline: 'Что нового на сайтах Министерства здравоохранения?',
+      last_updated: 'Последнее обновление', next_update: 'Обновление через', minutes: 'мин',
+      articles: 'Статьи и новости', new_items: 'новых материалов', sources: 'Источники',
+      print: 'Печать', email: 'Email', share: 'Поделиться', dark_mode: 'Ночной режим',
+      copy_link: 'Копировать ссылку', copied: 'Скопировано!', more_share: 'Ещё варианты...',
+      search_placeholder: 'Поиск по всем материалам...',
+      topic_label: 'Тема:', source_label: 'Источник:',
+      all: 'Все', all_sources: 'Все источники', saved: 'Сохранённые',
+      f_vaccines: 'Вакцины', f_mental: 'Психическое здоровье', f_children: 'Дети',
+      f_emergency: 'Скорая помощь', f_nutrition: 'Питание',
+      showing: 'Показано', articles_short: 'материалов',
+      no_results: 'Результаты не найдены',
+      footer: 'Автоматически собирается с сайтов Министерства здравоохранения',
+      new_badge: 'Новое', read_more: 'Читать далее', read_more_arrow: '→',
+      a11y: 'Доступность', a11y_open: 'Открыть меню доступности', a11y_panel_label: 'Меню доступности',
+      close: 'Закрыть', text_size: 'Размер текста', color_display: 'Цвет и отображение',
+      readability: 'Читаемость', nav_motion: 'Навигация и движение',
+      high_contrast: 'Высокий контраст', grayscale: 'Оттенки серого',
+      readable_font: 'Читаемый шрифт (Arial)', more_spacing: 'Увеличенный интервал',
+      underline_links: 'Подчеркнуть ссылки', highlight_focus: 'Выделить фокус',
+      stop_anim: 'Остановить анимацию', big_cursor: 'Большой курсор',
+      reset_a11y: 'Сбросить настройки доступности',
+      decrease_font: 'Уменьшить шрифт', increase_font: 'Увеличить шрифт',
+      font_labels: ['Крошечный','Маленький','Нормальный','Средний','Большой','Очень большой','Огромный'],
+      dir: 'ltr', lang: 'ru'
+    }}
+  }};
+
+  var currentLang = 'he';
+
+  function setLang(lang) {{
+    if (!TRANSLATIONS[lang]) return;
+    currentLang = lang;
+    localStorage.setItem('moh_lang', lang);
+    const T = TRANSLATIONS[lang];
+
+    // document lang/dir — keep RTL for he/ar, switch for en/ru
+    document.documentElement.lang = T.lang;
+    // Note: page content is in Hebrew so we keep RTL always, only UI text changes
+    // For en/ru we add a helper class so specific UI elements can use ltr
+    document.documentElement.setAttribute('data-lang', lang);
+
+    // Update page title
+    document.title = T.title;
+
+    // Update all data-i18n elements
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {{
+      var key = el.getAttribute('data-i18n');
+      if (T[key] !== undefined) el.textContent = T[key];
+    }});
+
+    // Update placeholders
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {{
+      var key = el.getAttribute('data-i18n-placeholder');
+      if (T[key] !== undefined) el.placeholder = T[key];
+    }});
+
+    // Update title attributes
+    document.querySelectorAll('[data-i18n-title]').forEach(function(el) {{
+      var key = el.getAttribute('data-i18n-title');
+      if (T[key] !== undefined) el.title = T[key];
+    }});
+
+    // Update aria-label attributes
+    document.querySelectorAll('[data-i18n-aria]').forEach(function(el) {{
+      var key = el.getAttribute('data-i18n-aria');
+      if (T[key] !== undefined) el.setAttribute('aria-label', T[key]);
+    }});
+
+    // Update read-more arrows direction
+    document.querySelectorAll('.read-more-arrow').forEach(function(el) {{
+      el.textContent = T.read_more_arrow || (T.dir === 'rtl' ? '←' : '→');
+    }});
+
+    // Update font size label
+    var lbl = document.getElementById('fs-label');
+    if (lbl) lbl.textContent = T.font_labels[baseFontIndex + fontSizeLevel] || T.font_labels[2];
+
+    // Update results count text
+    _updateResultsCount();
+
+    // Highlight active lang button
+    ['he','ar','en','ru'].forEach(function(l) {{
+      var btn = document.getElementById('lang-' + l);
+      if (btn) btn.classList.toggle('active', l === lang);
+    }});
+  }}
+
+  function _updateResultsCount() {{
+    var count = document.querySelectorAll('.news-card.visible').length;
+    var el = document.getElementById('results-count');
+    if (!el) return;
+    var T = TRANSLATIONS[currentLang];
+    el.innerHTML = T.showing + ' <strong>' + count + '</strong> ' + T.articles_short;
+  }}
+
+  // Init language
+  (function() {{
+    var saved = localStorage.getItem('moh_lang') || 'he';
+    if (TRANSLATIONS[saved]) {{
+      // Apply without animation
+      setLang(saved);
+    }}
+  }})();
 
   // ── DARK MODE ──
   (function() {{
@@ -1335,6 +1633,12 @@ def generate(data):
     }} else {{
       icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
     }}
+  }}
+
+  function toggleFilters(btn) {{
+    var panel = document.getElementById('toolbar-filters');
+    var open = panel.classList.toggle('open');
+    btn.classList.toggle('open', open);
   }}
 
   function toggleDarkMode() {{
@@ -1514,7 +1818,10 @@ def generate(data):
     }});
     document.getElementById('no-results').classList.toggle('visible', visible === 0);
     var rc = document.getElementById('results-count');
-    if (rc) rc.innerHTML = 'מוצגות <strong>' + visible + '</strong> מתוך ' + total + ' כתבות';
+    if (rc) {{
+      var T = TRANSLATIONS[currentLang] || TRANSLATIONS.he;
+      rc.innerHTML = T.showing + ' <strong>' + visible + '</strong> ' + T.articles_short;
+    }}
   }}
 
   function setTagFilter(tag, btn) {{
@@ -1596,7 +1903,7 @@ def generate(data):
     idx = Math.max(0, Math.min(fontSizes.length - 1, idx));
     document.documentElement.style.fontSize = fontSizes[idx];
     var lbl = document.getElementById('fs-label');
-    if (lbl) lbl.textContent = fontLabels[idx];
+    if (lbl) lbl.textContent = (TRANSLATIONS[currentLang] || TRANSLATIONS.he).font_labels[idx] || fontLabels[idx];
   }}
 
   function changeFontSize(dir) {{
