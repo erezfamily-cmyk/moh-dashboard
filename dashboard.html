@@ -240,6 +240,54 @@
     }
     .lang-sep { width: 1px; height: 14px; background: rgba(255,255,255,.2); }
 
+    /* ── TRANSLATION PROGRESS ── */
+    .trans-indicator {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,.7);
+      margin-right: 8px;
+    }
+    .trans-indicator.visible { display: flex; }
+    .trans-spinner {
+      width: 12px; height: 12px;
+      border: 2px solid rgba(255,255,255,.25);
+      border-top-color: rgba(255,255,255,.85);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .trans-progress-bar {
+      width: 60px; height: 3px;
+      background: rgba(255,255,255,.2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .trans-progress-fill {
+      height: 100%;
+      background: #4ade80;
+      border-radius: 2px;
+      transition: width .2s;
+      width: 0%;
+    }
+    /* Skeleton shimmer while card content is loading */
+    .card-translating .card-title-link,
+    .card-translating .card-desc {
+      background: linear-gradient(90deg, rgba(0,0,0,.06) 25%, rgba(0,0,0,.12) 50%, rgba(0,0,0,.06) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+      color: transparent !important;
+      border-radius: 4px;
+      user-select: none;
+    }
+    [data-theme="dark"] .card-translating .card-title-link,
+    [data-theme="dark"] .card-translating .card-desc {
+      background: linear-gradient(90deg, rgba(255,255,255,.06) 25%, rgba(255,255,255,.12) 50%, rgba(255,255,255,.06) 75%);
+      background-size: 200% 100%;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
     .btn-darkmode {
       background: rgba(255,255,255,.06);
       border-color: rgba(255,255,255,.15);
@@ -756,6 +804,124 @@
       border-color: #252e48;
       color: var(--secondary);
     }
+
+    /* ── MOBILE MENU BUTTON ── */
+    .mobile-menu-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 8px;
+      padding: 8px 10px;
+      cursor: pointer;
+      color: rgba(255,255,255,.85);
+      transition: background .15s, border-color .15s;
+      flex-shrink: 0;
+    }
+    .mobile-menu-btn:hover { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.4); color: white; }
+    .mobile-menu-btn.open { background: rgba(255,255,255,.18); border-color: rgba(255,255,255,.5); color: white; }
+
+    /* ── MOBILE MENU PANEL ── */
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      padding: 16px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 99;
+    }
+    .mobile-menu.open { display: flex; }
+    [data-theme="dark"] .mobile-menu {
+      background: #111827;
+      border-bottom-color: #252e48;
+    }
+    .mobile-menu #search-mobile {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .mobile-menu-search {
+      position: relative;
+    }
+    .mobile-menu-search .search-icon-inner {
+      position: absolute;
+      right: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--secondary);
+      pointer-events: none;
+    }
+    .mobile-menu-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0;
+      border: none;
+    }
+    .mobile-menu-lang {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .mobile-menu-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .mobile-menu-actions .btn-top {
+      background: rgba(13,27,62,.08);
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .mobile-menu-actions .btn-top:hover {
+      background: rgba(13,27,62,.15);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+    .mobile-menu-actions .btn-top-primary {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: white;
+    }
+    .mobile-menu-actions .btn-top-primary:hover {
+      background: #0055d4;
+      border-color: #0055d4;
+    }
+    [data-theme="dark"] .mobile-menu-actions .btn-top {
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.15);
+      color: rgba(255,255,255,.85);
+    }
+    .mobile-menu-results {
+      font-size: 0.78rem;
+      color: var(--secondary);
+    }
+    .mobile-menu-results strong { color: var(--blue); font-weight: 700; }
+    .mobile-menu .lang-btn {
+      background: rgba(13,27,62,.07);
+      border-color: var(--border);
+      color: var(--secondary);
+    }
+    .mobile-menu .lang-btn:hover { background: rgba(13,27,62,.14); color: var(--text); border-color: var(--blue); }
+    .mobile-menu .lang-btn.active {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+    }
+    [data-theme="dark"] .mobile-menu .lang-btn {
+      background: rgba(255,255,255,.06);
+      border-color: #252e48;
+      color: var(--secondary);
+    }
+    [data-theme="dark"] .mobile-menu .lang-btn.active {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+    }
+
     @media (max-width: 768px) {
       .toolbar {
         flex-direction: column;
@@ -766,19 +932,12 @@
       .toolbar-top-row { gap: 8px; }
       .search-wrap { flex: 1; }
       #search { width: 100%; box-sizing: border-box; }
-      .hamburger-btn { display: inline-flex; }
-      .toolbar-filters {
-        display: none;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-        padding-top: 12px;
-        margin-top: 12px;
-        border-top: 1px solid var(--border);
-      }
-      .toolbar-filters.open { display: flex; }
-      .filter-group { flex-wrap: wrap; }
+      .toolbar-filters { display: none !important; }
+      .hamburger-btn { display: none !important; }
       .results-count { display: none; }
+      .lang-switcher { display: none; }
+      .top-bar-actions { display: none; }
+      .mobile-menu-btn { display: flex; }
     }
     @media (max-width: 640px) {
       .top-bar { padding: 10px 16px; }
@@ -1034,6 +1193,10 @@
 <header class="top-bar">
   <img src="https://efsharibari.health.gov.il/media/1070/footer-health_logo.png?width=500" class="moh-logo" alt="משרד הבריאות" onerror="this.style.display='none'">
   <div class="lang-switcher">
+    <div class="trans-indicator" id="trans-indicator">
+      <div class="trans-spinner"></div>
+      <div class="trans-progress-bar"><div class="trans-progress-fill" id="trans-fill"></div></div>
+    </div>
     <button class="lang-btn active" onclick="setLang('he')" id="lang-he">עב</button>
     <div class="lang-sep"></div>
     <button class="lang-btn" onclick="setLang('ar')" id="lang-ar">عر</button>
@@ -1102,7 +1265,77 @@
       </div>
     </div>
   </div>
+  <button class="mobile-menu-btn" id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="תפריט">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
 </header>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-search">
+    <span class="search-icon-inner">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
+    <input type="text" id="search-mobile" data-i18n-placeholder="search_placeholder" placeholder="חיפוש בכל הכתבות..." oninput="document.getElementById('search').value=this.value; filterCards()" autocomplete="off" style="padding:9px 40px 9px 18px;border:1.5px solid var(--border);border-radius:50px;font-size:0.88rem;font-family:inherit;direction:rtl;width:100%;box-sizing:border-box;background:var(--light-bg);color:var(--text);outline:none;">
+  </div>
+  <div class="toolbar-filters" id="toolbar-filters-mobile" style="display:flex;flex-direction:column;gap:10px;align-items:stretch;">
+    <div class="filter-group">
+      <span class="filter-label" data-i18n="topic_label">נושא:</span>
+      <button class="filter-pill active" onclick="setTagFilter('', this)" data-i18n="all">הכל</button>
+      <button class="filter-pill" onclick="setTagFilter('חיסונים', this)" data-i18n="f_vaccines">חיסונים</button>
+      <button class="filter-pill" onclick="setTagFilter('בריאות נפש', this)" data-i18n="f_mental">בריאות נפש</button>
+      <button class="filter-pill" onclick="setTagFilter('ילדים', this)" data-i18n="f_children">ילדים</button>
+      <button class="filter-pill" onclick="setTagFilter('חירום', this)" data-i18n="f_emergency">חירום</button>
+      <button class="filter-pill" onclick="setTagFilter('תזונה', this)" data-i18n="f_nutrition">תזונה</button>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label" data-i18n="source_label">מקור:</span>
+      <button class="filter-pill active-teal" id="site-all-btn-mobile" onclick="setSiteFilter('', this)" data-i18n="all_sources">כל המקורות</button>
+      <button class="filter-pill" onclick="setSiteFilter('משרד הבריאות - פורטל ראשי',this)">משרד הבריאות - פורטל ראשי</button>
+    <button class="filter-pill" onclick="setSiteFilter('פורטל הורים',this)">פורטל הורים</button>
+    <button class="filter-pill" onclick="setSiteFilter('בריאות הנפש',this)">בריאות הנפש</button>
+    <button class="filter-pill" onclick="setSiteFilter('הגיל השלישי',this)">הגיל השלישי</button>
+    <button class="filter-pill" onclick="setSiteFilter('אפשריבריא',this)">אפשריבריא</button>
+    <button class="filter-pill" onclick="setSiteFilter('מנהל האחיות',this)">מנהל האחיות</button>
+    
+    </div>
+    <div class="filter-group">
+      <button class="filter-pill" id="bookmarks-btn-mobile" onclick="toggleBookmarksFilter(this)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-left:4px"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        <span data-i18n="saved">שמורים</span>
+      </button>
+    </div>
+  </div>
+  <hr class="mobile-menu-divider">
+  <div class="mobile-menu-lang">
+    <button class="lang-btn active" onclick="setLang('he')" id="lang-he-mobile">עב</button>
+    <div class="lang-sep"></div>
+    <button class="lang-btn" onclick="setLang('ar')" id="lang-ar-mobile">عر</button>
+    <div class="lang-sep"></div>
+    <button class="lang-btn" onclick="setLang('en')" id="lang-en-mobile">EN</button>
+    <div class="lang-sep"></div>
+    <button class="lang-btn" onclick="setLang('ru')" id="lang-ru-mobile">РУ</button>
+  </div>
+  <div class="mobile-menu-actions">
+    <button class="btn-top btn-darkmode" onclick="toggleDarkMode()" data-i18n-title="dark_mode" title="מצב לילה">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span data-i18n="dark_mode">מצב לילה</span>
+    </button>
+    <button class="btn-top" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      <span data-i18n="print">הדפסה</span>
+    </button>
+    <button class="btn-top btn-top-primary" onclick="sendEmail()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <span data-i18n="email">מייל</span>
+    </button>
+    <button class="btn-top" onclick="toggleShareMenu(event)" data-i18n-title="share" title="שיתוף">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      <span data-i18n="share">שיתוף</span>
+    </button>
+  </div>
+  <span class="mobile-menu-results" id="results-count-mobile"><span data-i18n="showing">מוצגות</span> <strong>58</strong> <span data-i18n="articles_short">כתבות</span></span>
+</div>
 
 <!-- NEWS TICKER -->
 <div class="ticker-wrap">
@@ -1147,7 +1380,7 @@
     <h1 class="hero-title" data-i18n="title">עדכוני משרד הבריאות</h1>
     <p class="hero-tagline" data-i18n="tagline">מה התחדש באתרי משרד הבריאות השונים בימים האחרונים?</p>
     <p class="hero-sub">
-      <span data-i18n="last_updated">עודכן לאחרונה</span>: <strong>21.03.2026  22:06</strong>
+      <span data-i18n="last_updated">עודכן לאחרונה</span>: <strong>21.03.2026  22:17</strong>
       <span class="refresh-countdown">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         <span data-i18n="next_update">עדכון בעוד</span> <span class="cd-val" id="cd-val">...</span> <span data-i18n="minutes">דקות</span>
@@ -2114,7 +2347,7 @@
 
   </div>
   <div class="no-results" id="no-results" data-i18n="no_results">לא נמצאו תוצאות לחיפוש זה</div>
-  <p class="page-footer"><span data-i18n="footer">נגרד אוטומטית מאתרי משרד הבריאות</span> &middot; 21.03.2026  22:06</p>
+  <p class="page-footer"><span data-i18n="footer">נגרד אוטומטית מאתרי משרד הבריאות</span> &middot; 21.03.2026  22:17</p>
 </main>
 
 <script>
@@ -2293,19 +2526,25 @@
     // Update results count text
     _updateResultsCount();
 
-    // Highlight active lang button
+    // Highlight active lang button (desktop + mobile)
     ['he','ar','en','ru'].forEach(function(l) {
       var btn = document.getElementById('lang-' + l);
       if (btn) btn.classList.toggle('active', l === lang);
+      var btnM = document.getElementById('lang-' + l + '-mobile');
+      if (btnM) btnM.classList.toggle('active', l === lang);
     });
+
+    // Translate card content
+    translateCards(lang);
   }
 
   function _updateResultsCount() {
     var count = document.querySelectorAll('.news-card.visible').length;
-    var el = document.getElementById('results-count');
-    if (!el) return;
     var T = TRANSLATIONS[currentLang];
-    el.innerHTML = T.showing + ' <strong>' + count + '</strong> ' + T.articles_short;
+    var el = document.getElementById('results-count');
+    if (el) el.innerHTML = T.showing + ' <strong>' + count + '</strong> ' + T.articles_short;
+    var elM = document.getElementById('results-count-mobile');
+    if (elM) elM.innerHTML = T.showing + ' <strong>' + count + '</strong> ' + T.articles_short;
   }
 
   // Init language
@@ -2339,6 +2578,13 @@
   function toggleFilters(btn) {
     var panel = document.getElementById('toolbar-filters');
     var open = panel.classList.toggle('open');
+    btn.classList.toggle('open', open);
+  }
+
+  function toggleMobileMenu() {
+    var menu = document.getElementById('mobile-menu');
+    var btn = document.getElementById('mobile-menu-btn');
+    var open = menu.classList.toggle('open');
     btn.classList.toggle('open', open);
   }
 
@@ -2466,6 +2712,10 @@
   function toggleBookmarksFilter(btn) {
     showBookmarksOnly = !showBookmarksOnly;
     btn.classList.toggle('active-gold', showBookmarksOnly);
+    // Sync the other bookmarks button (desktop <-> mobile)
+    var otherId = btn.id === 'bookmarks-btn' ? 'bookmarks-btn-mobile' : 'bookmarks-btn';
+    var other = document.getElementById(otherId);
+    if (other) other.classList.toggle('active-gold', showBookmarksOnly);
     filterCards();
   }
 
@@ -2518,11 +2768,14 @@
       }
     });
     document.getElementById('no-results').classList.toggle('visible', visible === 0);
+    var T = TRANSLATIONS[currentLang] || TRANSLATIONS.he;
     var rc = document.getElementById('results-count');
-    if (rc) {
-      var T = TRANSLATIONS[currentLang] || TRANSLATIONS.he;
-      rc.innerHTML = T.showing + ' <strong>' + visible + '</strong> ' + T.articles_short;
-    }
+    if (rc) rc.innerHTML = T.showing + ' <strong>' + visible + '</strong> ' + T.articles_short;
+    var rcM = document.getElementById('results-count-mobile');
+    if (rcM) rcM.innerHTML = T.showing + ' <strong>' + visible + '</strong> ' + T.articles_short;
+    // Sync mobile search input with desktop
+    var sm = document.getElementById('search-mobile');
+    if (sm && sm !== document.activeElement) sm.value = document.getElementById('search').value;
   }
 
   function setTagFilter(tag, btn) {
@@ -2538,7 +2791,7 @@
 
   function setSiteFilter(site, btn) {
     activeSite = site;
-    document.querySelectorAll('[data-site-btn], #site-all-btn').forEach(function(b) {
+    document.querySelectorAll('[data-site-btn], #site-all-btn, #site-all-btn-mobile').forEach(function(b) {
       b.classList.remove('active-teal');
     });
     btn.classList.add('active-teal');
@@ -2633,6 +2886,109 @@
     fontSizeLevel = 0;
     applyFontSize();
     localStorage.removeItem('moh_a11y');
+  }
+
+  // ── CARD TRANSLATION ──
+  var _transCache = {};
+  var _currentTransLang = null;
+
+  async function translateCards(lang) {
+    if (lang === 'he') {
+      _restoreHebrew();
+      return;
+    }
+    _currentTransLang = lang;
+    if (!_transCache[lang]) _transCache[lang] = {};
+
+    var cards = Array.from(document.querySelectorAll('.news-card'));
+
+    // Collect unique texts not yet cached
+    var seen = new Set();
+    var todo = [];
+    cards.forEach(function(card) {
+      ['title','desc'].forEach(function(attr) {
+        var text = card.dataset[attr] || '';
+        if (text && !_transCache[lang][text] && !seen.has(text)) {
+          seen.add(text);
+          todo.push(text);
+        }
+      });
+    });
+
+    // Add shimmer to cards while loading
+    cards.forEach(function(c) { c.classList.add('card-translating'); });
+
+    if (todo.length === 0) {
+      _applyTranslations(lang, cards);
+      cards.forEach(function(c) { c.classList.remove('card-translating'); });
+      return;
+    }
+
+    _setTransProgress(true, 0);
+
+    // Translate in parallel batches of 5, titles first
+    var BATCH = 5;
+    var done = 0;
+    for (var i = 0; i < todo.length; i += BATCH) {
+      if (_currentTransLang !== lang) return; // lang changed, abort
+      var chunk = todo.slice(i, i + BATCH);
+      await Promise.all(chunk.map(async function(text) {
+        try {
+          _transCache[lang][text] = await _gtrans(text, lang);
+        } catch(e) {
+          _transCache[lang][text] = text; // fallback: keep original
+        }
+        done++;
+      }));
+      _setTransProgress(true, done / todo.length);
+      // Apply partial translations so titles appear as they come in
+      _applyTranslations(lang, cards);
+    }
+
+    _setTransProgress(false, 1);
+    cards.forEach(function(c) { c.classList.remove('card-translating'); });
+    _applyTranslations(lang, cards);
+  }
+
+  function _applyTranslations(lang, cards) {
+    var cache = _transCache[lang] || {};
+    (cards || document.querySelectorAll('.news-card')).forEach(function(card) {
+      var titleEl = card.querySelector('.card-title-link');
+      var descEl  = card.querySelector('.card-desc');
+      var t = card.dataset.title || '';
+      var d = card.dataset.desc  || '';
+      if (titleEl && cache[t]) titleEl.textContent = cache[t];
+      if (descEl  && cache[d]) descEl.textContent  = cache[d];
+    });
+  }
+
+  function _restoreHebrew() {
+    _currentTransLang = 'he';
+    document.querySelectorAll('.news-card').forEach(function(card) {
+      var titleEl = card.querySelector('.card-title-link');
+      var descEl  = card.querySelector('.card-desc');
+      card.classList.remove('card-translating');
+      if (titleEl && card.dataset.title) titleEl.textContent = card.dataset.title;
+      if (descEl  && card.dataset.desc)  descEl.textContent  = card.dataset.desc;
+    });
+  }
+
+  async function _gtrans(text, tl) {
+    var url = 'https://translate.googleapis.com/translate_a/single'
+            + '?client=gtx&sl=he&tl=' + encodeURIComponent(tl)
+            + '&dt=t&q=' + encodeURIComponent(text);
+    var resp = await fetch(url);
+    if (!resp.ok) throw new Error('translate error');
+    var data = await resp.json();
+    // data[0] is array of [translated_chunk, original_chunk, ...]
+    return data[0].map(function(x) { return x[0]; }).join('');
+  }
+
+  function _setTransProgress(visible, pct) {
+    var ind  = document.getElementById('trans-indicator');
+    var fill = document.getElementById('trans-fill');
+    if (ind)  ind.classList.toggle('visible', visible);
+    if (fill) fill.style.width = Math.round((pct || 0) * 100) + '%';
   }
 
   // ── SHARE ──
