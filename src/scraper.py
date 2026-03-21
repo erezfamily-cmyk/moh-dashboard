@@ -48,6 +48,24 @@ SITES = {
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA_FILE = os.path.join(ROOT, 'scraped_data.json')
+
+# Fallback images for pages blocked by Cloudflare or without accessible images
+FALLBACK_IMAGES = {
+    'https://www.gov.il/he/pages/minister-of-health':
+        'https://www.gov.il/BlobFolder/office/ministry_of_health/he/ministry_of_health.png',
+    'https://www.gov.il/he/pages/ministry-director-general':
+        'https://www.gov.il/BlobFolder/office/ministry_of_health/he/ministry_of_health.png',
+    'https://www.gov.il/he/pages/sheagathaari':
+        'https://www.gov.il/BlobFolder/office/ministry_of_health/he/ministry_of_health.png',
+    'https://www1.health.gov.il/nursing/':
+        'https://www1.health.gov.il/media/farlcak0/nursingai-no-bg-1.png',
+    'https://me.health.gov.il/met-calculator/':
+        'https://me.health.gov.il/media/zddh0ilj/met-social.jpg',
+    'https://efsharibari.health.gov.il/well-being/smoking-prevention/call-center/':
+        'http://efsharibari.health.gov.il/media/2434/call-center.jpg',
+    'https://efsharibari.health.gov.il/well-being/smoking-prevention/clear-environment/':
+        'http://efsharibari.health.gov.il/media/1244/no-smoking-1639349_1920.jpg',
+}
 PREV_FILE = os.path.join(ROOT, 'scraped_data_prev.json')
 
 # Max article summaries to fetch per site (to keep scraping fast)
@@ -155,10 +173,13 @@ def _enrich_items(items, use_playwright=False):
     """Fetch summaries for items that are missing descriptions."""
     enriched = 0
     for item in items:
-        if enriched >= MAX_SUMMARIES_PER_SITE:
-            break
         link = item.get('link', '')
         if not link:
+            continue
+        # Apply fallback image for known-blocked pages
+        if not item.get('image_url') and link in FALLBACK_IMAGES:
+            item['image_url'] = FALLBACK_IMAGES[link]
+        if enriched >= MAX_SUMMARIES_PER_SITE:
             continue
         # Skip only if already has both description AND image
         if len(item.get('description', '')) > 60 and item.get('image_url'):
