@@ -170,7 +170,7 @@ def generate(data):
     </button>'''
 
         delay = min(card_idx * 0.04, 0.5)
-        cards_html += f'''<article class="news-card" data-title="{title}" data-tags="{tags_attr}" data-site="{_escape(site_name)}" data-isnew="{"1" if is_new else "0"}" data-link="{_escape(link)}" style="animation-delay:{delay:.2f}s">
+        cards_html += f'''<article class="news-card" data-title="{title}" data-desc="{desc}" data-tags="{tags_attr}" data-site="{_escape(site_name)}" data-isnew="{"1" if is_new else "0"}" data-link="{_escape(link)}" style="animation-delay:{delay:.2f}s">
   {thumbnail_html}
   <div class="card-body">
     <div class="card-meta-row">
@@ -196,6 +196,8 @@ def generate(data):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>עדכוני משרד הבריאות</title>
+  <link rel="icon" type="image/svg+xml" href="https://me.health.gov.il/media/224edbtw/logo-desktop-header.svg">
+  <link rel="shortcut icon" href="https://www.health.gov.il/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -330,7 +332,7 @@ def generate(data):
 
     /* ── NEWS TICKER ── */
     .ticker-wrap {{
-      background: #b91c1c;
+      background: #00877d;
       overflow: hidden;
       position: relative;
       height: 36px;
@@ -339,7 +341,7 @@ def generate(data):
       border-bottom: 1px solid rgba(255,255,255,.07);
     }}
     .ticker-badge {{
-      background: #7f1d1d !important;
+      background: #005c54 !important;
       position: absolute;
       right: 0;
       top: 0;
@@ -356,7 +358,7 @@ def generate(data):
       letter-spacing: 0.02em;
     }}
     .ticker-badge::after {{
-      background: linear-gradient(to left, #7f1d1d, transparent) !important;
+      background: linear-gradient(to left, #005c54, transparent) !important;
       content: '';
       position: absolute;
       left: -10px;
@@ -573,8 +575,14 @@ def generate(data):
       color: white;
       font-weight: 600;
     }}
-    .new-badge-total {{
+    .results-count {{
+      font-size: 0.78rem;
+      color: var(--secondary);
+      white-space: nowrap;
       margin-right: auto;
+    }}
+    .results-count strong {{ color: var(--blue); font-weight: 700; }}
+    .new-badge-total {{
       background: linear-gradient(135deg, var(--blue), var(--teal));
       color: white;
       padding: 5px 14px;
@@ -1144,6 +1152,7 @@ def generate(data):
     </button>
   </div>
   {"<span class='new-badge-total'>&#10022; " + str(total_new) + " פריטים חדשים</span>" if total_new > 0 else ""}
+  <span class="results-count" id="results-count">מוצגות <strong>{len(all_items)}</strong> כתבות</span>
 </div>
 
 <!-- MAIN GRID -->
@@ -1336,12 +1345,14 @@ def generate(data):
   function filterCards() {{
     const q = document.getElementById('search').value.trim().toLowerCase();
     let visible = 0;
+    const total = document.querySelectorAll('.news-card').length;
     document.querySelectorAll('.news-card').forEach(function(card) {{
       const title = (card.dataset.title || '').toLowerCase();
+      const desc  = (card.dataset.desc  || '').toLowerCase();
       const tags  = (card.dataset.tags  || '').toLowerCase();
       const site  = (card.dataset.site  || '').toLowerCase();
 
-      const matchQ    = !q || title.includes(q) || tags.includes(q) || site.includes(q);
+      const matchQ    = !q || title.includes(q) || desc.includes(q) || tags.includes(q) || site.includes(q);
       const matchTag  = !activeTag || tags.includes(activeTag.toLowerCase());
       const matchSite = !activeSite || site === activeSite.toLowerCase();
       const matchBM   = !showBookmarksOnly || isBookmarked(card);
@@ -1355,6 +1366,8 @@ def generate(data):
       }}
     }});
     document.getElementById('no-results').classList.toggle('visible', visible === 0);
+    var rc = document.getElementById('results-count');
+    if (rc) rc.innerHTML = 'מוצגות <strong>' + visible + '</strong> מתוך ' + total + ' כתבות';
   }}
 
   function setTagFilter(tag, btn) {{
