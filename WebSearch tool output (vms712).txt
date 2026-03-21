@@ -1,0 +1,26 @@
+Web search results for query: ""kineret.health.gov.il" Israel Ministry Health"
+
+Links: [{"title":"Health","url":"https://kineret.health.gov.il/en"},{"title":"Catalog page | kineret","url":"https://kineret.health.gov.il/en/catalog"},{"title":"Kineret - The largest Israeli chain of hospitals’ data available now in OMOP common data model format enabling broad collaborative research | medRxiv","url":"https://www.medrxiv.org/content/10.1101/2025.07.04.25330663v1"},{"title":"About us | kineret","url":"https://kineret.health.gov.il/en/about-us"},{"title":"Business services | kineret","url":"https://kineret.health.gov.il/en/business-services"},{"title":"Kineret: Israel’s Largest Hospital Network Transformed into the OMOP common data model for collaborative research - PMC","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC12574879/"},{"title":"Kineret: Israel’s Largest Hospital Network Transformed into the OMOP common data model for collaborative research | PLOS One","url":"https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0334848"},{"title":"Ministry of Health - Gov.il","url":"https://www.gov.il/en/departments/ministry_of_health/govil-landing-page"},{"title":"Kineret - The largest Israeli chain of hospitals’ data available","url":"https://www.medrxiv.org/content/10.1101/2025.07.04.25330663v1.full.pdf"},{"title":"Misrad Habriut Branches - Nefesh B'Nefesh","url":"https://www.nbn.org.il/life-in-israel/government-services/government-office-locations/misrad-habriut-branches/"}]
+
+Based on the search results, here's information about kineret.health.gov.il:
+
+## Overview
+
+Kinneret is a strategic project led by the Division for Government Medical Centers in the Ministry of Health, which aims to accelerate the initiatives and possibilities of research and cooperation. Kineret is an innovative digital project that serves as a strategic breakthrough by and for the Israeli network of government medical centers.
+
+## Purpose and Objectives
+
+In 2021, the Directorate of Government Medical Centers at the Israeli Ministry of Health launched the Kineret initiative to standardize clinical data across its network of public medical centers and facilitate its secondary use for research and innovation. The primary goals were to streamline data extraction, cleaning, and sharing processes, thereby enabling efficient reuse of clinical data for translational and collaborative research.
+
+## Data and Infrastructure
+
+The catalog offers health datasets, collected from Israel's government medical centers. The Kineret project has implemented solutions using uniform extraction processes, while optimizing information quality, anonymizing the information, and using the international OMOP research standard.
+
+## Coverage
+
+The Directorate oversees a national network of 25 government healthcare institutions, including 11 general medical centers, 9 mental health centers, and 5 geriatric care facilities.
+
+The website serves as a portal for researchers and institutions seeking access to this standardized healthcare data infrastructure.
+
+
+REMINDER: You MUST include the sources above in your response to the user using markdown hyperlinks.

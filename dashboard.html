@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>עדכוני משרד הבריאות</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:      #0d1b3e;
+      --navy2:     #1a3a6b;
+      --blue:      #0068f5;
+      --teal:      #00a99d;
+      --light-bg:  #b8d8e8;
+      --white:     #ffffff;
+      --border:    #93bdd4;
+      --text:      #1b2030;
+      --secondary: #5e6783;
+      --radius:    12px;
+      --shadow:    0 2px 16px rgba(13,27,62,.09);
+      --shadow-hover: 0 8px 32px rgba(13,27,62,.18);
+    }
+
+    /* ── DARK MODE ── */
+    [data-theme="dark"] {
+      --light-bg:  #0e1219;
+      --white:     #161c2d;
+      --border:    #252e48;
+      --text:      #e2e8f4;
+      --secondary: #7a85a0;
+      --shadow:    0 2px 16px rgba(0,0,0,.4);
+      --shadow-hover: 0 8px 32px rgba(0,0,0,.6);
+    }
+    [data-theme="dark"] .toolbar {
+      background: #111827;
+      border-bottom-color: #252e48;
+    }
+    [data-theme="dark"] #search {
+      background: #0e1219;
+      color: var(--text);
+      border-color: #252e48;
+    }
+    [data-theme="dark"] #search:focus {
+      background: #161c2d;
+    }
+    [data-theme="dark"] .filter-pill {
+      background: #161c2d;
+      border-color: #252e48;
+      color: var(--secondary);
+    }
+    [data-theme="dark"] .filter-pill:hover {
+      background: #1e2840;
+      color: #7ec8fa;
+    }
+    [data-theme="dark"] .card-title-link { color: var(--text); }
+    [data-theme="dark"] .card-title-link:hover { color: #7ec8fa; }
+    [data-theme="dark"] .site-tag { opacity: 0.9; }
+    [data-theme="dark"] .btn-top {
+      border-color: rgba(255,255,255,.15);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Rubik', 'Open Sans', 'Segoe UI', Arial, sans-serif;
+      background: var(--light-bg);
+      color: var(--text);
+      direction: rtl;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    /* ── SCROLL PROGRESS BAR ── */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--blue), var(--teal));
+      z-index: 9999;
+      transition: width .08s linear;
+      pointer-events: none;
+    }
+
+    /* ── TOP HEADER BAR ── */
+    .top-bar {
+      background: var(--navy);
+      padding: 12px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 12px rgba(0,0,0,.25);
+    }
+    .moh-logo {
+      height: 40px;
+      width: auto;
+    }
+    .top-bar-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .btn-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.85);
+      text-decoration: none;
+      transition: background .15s, border-color .15s;
+    }
+    .btn-top:hover { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.4); color: white; }
+    .btn-top-primary {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: white;
+    }
+    .btn-top-primary:hover { background: #0055d4; border-color: #0055d4; }
+    .btn-darkmode {
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.15);
+      padding: 7px 10px;
+    }
+
+    /* ── NEWS TICKER ── */
+    .ticker-wrap {
+      background: #b91c1c;
+      overflow: hidden;
+      position: relative;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .ticker-badge {
+      background: #7f1d1d !important;
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: var(--blue);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: white;
+      z-index: 2;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+    .ticker-badge::after {
+      background: linear-gradient(to left, #7f1d1d, transparent) !important;
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      background: linear-gradient(to left, var(--blue), transparent);
+    }
+    .ticker-overflow {
+      overflow: hidden;
+      width: 100%;
+      padding-right: 110px;
+    }
+    .ticker-track {
+      display: inline-block;
+      white-space: nowrap;
+      color: rgba(255,255,255,.72);
+      font-size: 0.78rem;
+      will-change: transform;
+    }
+    .tick-item { display: inline; }
+    .tick-sep { color: var(--teal); opacity: .7; margin: 0 4px; }
+
+    /* ── HERO BANNER ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
+      padding: 52px 32px 48px;
+      position: relative;
+      overflow: hidden;
+      text-align: right;
+    }
+    /* CSS dot-grid background */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(0,168,157,.18) 1px, transparent 1px),
+        radial-gradient(circle, rgba(0,104,245,.12) 1px, transparent 1px);
+      background-size: 40px 40px, 80px 80px;
+      background-position: 0 0, 20px 20px;
+      pointer-events: none;
+    }
+    /* ECG wave SVG */
+    .hero-ecg {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 90px;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .hero-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 8px rgba(0,0,0,.2);
+    }
+    .hero-tagline {
+      font-size: 1.15rem;
+      color: var(--teal);
+      font-weight: 700;
+      margin-bottom: 14px;
+      letter-spacing: 0.01em;
+    }
+    .hero-sub {
+      font-size: 1rem;
+      color: rgba(255,255,255,.65);
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .hero-sub strong {
+      color: rgba(255,255,255,.9);
+      font-weight: 600;
+    }
+    .refresh-countdown {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,.5);
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px;
+      padding: 3px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .refresh-countdown .cd-val {
+      color: #7dd3fc;
+      font-weight: 600;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 20px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .hero-stat {
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 10px;
+      padding: 10px 18px;
+      color: white;
+      font-size: 0.85rem;
+    }
+    .hero-stat strong {
+      display: block;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #7dd3fc;
+      line-height: 1.1;
+    }
+
+    /* ── TOOLBAR ── */
+    .toolbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    }
+    .search-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+    .search-icon-inner {
+      position: absolute;
+      right: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--secondary);
+      pointer-events: none;
+    }
+    #search {
+      padding: 9px 40px 9px 18px;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      direction: rtl;
+      width: 260px;
+      background: var(--light-bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    #search:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(0,104,245,.12);
+      background: white;
+    }
+    #search::placeholder { color: var(--secondary); }
+
+    .filter-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-label {
+      font-size: 0.78rem;
+      color: var(--secondary);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .filter-pill {
+      padding: 6px 14px;
+      border-radius: 50px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      color: var(--secondary);
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .filter-pill:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: #eef4ff;
+    }
+    .filter-pill.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: white;
+      font-weight: 600;
+    }
+    .filter-pill.active-teal {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: white;
+      font-weight: 600;
+    }
+    .filter-pill.active-gold {
+      background: #f59e0b;
+      border-color: #f59e0b;
+      color: white;
+      font-weight: 600;
+    }
+    .new-badge-total {
+      margin-right: auto;
+      background: linear-gradient(135deg, var(--blue), var(--teal));
+      color: white;
+      padding: 5px 14px;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* ── MAIN GRID ── */
+    .container {
+      max-width: 1280px;
+      margin: 32px auto;
+      padding: 0 24px;
+    }
+    .grid {
+      columns: 3;
+      column-gap: 20px;
+    }
+    @media (max-width: 1024px) { .grid { columns: 2; } }
+    @media (max-width: 640px)  { .grid { columns: 1; } }
+
+    /* ── NEWS CARD ── */
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .news-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      break-inside: avoid;
+      margin-bottom: 20px;
+      display: inline-block;
+      width: 100%;
+      opacity: 0;
+      animation: cardIn .45s ease forwards;
+      transition: box-shadow .2s, border-color .2s, transform .2s;
+    }
+    .news-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-3px);
+    }
+    .news-card.hidden { display: none !important; }
+    .news-card.bookmarked-card { border-color: #f59e0b88; }
+
+    /* Thumbnail */
+    .card-thumb {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      position: relative;
+      background: #e8edf3;
+    }
+    .card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .3s;
+    }
+    .news-card.visible:hover .card-thumb img { transform: scale(1.04); }
+    .card-thumb-gradient {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .thumb-icon {
+      opacity: .75;
+    }
+
+    /* Card body */
+    .card-body {
+      padding: 16px 18px 18px;
+    }
+    .card-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .site-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 50px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-date {
+      font-size: 0.72rem;
+      color: var(--secondary);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-right: auto;
+    }
+    .card-headline {
+      font-size: 0.97rem;
+      font-weight: 700;
+      line-height: 1.45;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .card-title-link {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .card-title-link:hover { color: var(--blue); text-decoration: underline; }
+    .pill-new {
+      display: inline-block;
+      background: var(--blue);
+      color: white;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .card-desc {
+      font-size: 0.83rem;
+      color: var(--secondary);
+      line-height: 1.6;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .btn-read-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--blue);
+      text-decoration: none;
+      transition: color .15s;
+    }
+    .btn-read-more:hover { color: var(--teal); text-decoration: underline; }
+
+    /* ── BOOKMARK BUTTON ── */
+    .bookmark-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 3px 4px;
+      color: var(--secondary);
+      transition: color .15s, transform .2s;
+      flex-shrink: 0;
+      line-height: 0;
+      border-radius: 4px;
+    }
+    .bookmark-btn:hover { color: var(--blue); transform: scale(1.15); }
+    .bookmark-btn.bookmarked { color: #f59e0b; }
+    .bookmark-btn.bookmarked svg { fill: #f59e0b; stroke: #f59e0b; }
+
+    /* ── SEARCH HIGHLIGHT ── */
+    mark.hl {
+      background: #fef08a;
+      color: #1b2030;
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+    [data-theme="dark"] mark.hl {
+      background: #854d0e;
+      color: #fef9c3;
+    }
+
+    /* ── FOOTER META ── */
+    .page-footer {
+      text-align: center;
+      color: var(--secondary);
+      font-size: 0.75rem;
+      margin: 8px 0 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .page-footer::before, .page-footer::after {
+      content: '';
+      flex: 1;
+      max-width: 140px;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── NO RESULTS ── */
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--secondary);
+      font-size: 1rem;
+      display: none;
+    }
+    .no-results.visible { display: block; }
+
+    @media (max-width: 640px) {
+      .top-bar { padding: 10px 16px; }
+      .hero { padding: 32px 16px 28px; }
+      .toolbar { padding: 12px 16px; }
+      .container { padding: 0 12px; margin-top: 20px; }
+      #search { width: 200px; }
+      .hero-stats { gap: 10px; }
+    }
+
+    @media print {
+      .top-bar, .toolbar, .ticker-wrap, #progress-bar, #a11y-panel { display: none; }
+      .news-card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; opacity: 1; transform: none; }
+      body { background: white; }
+      .hero { background: #1b2030; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    /* ── ACCESSIBILITY PANEL ── */
+    #a11y-toggle {
+      position: fixed;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1000;
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 0 8px 8px 0;
+      padding: 12px 10px;
+      cursor: pointer;
+      font-size: 1.3rem;
+      line-height: 1;
+      box-shadow: 2px 0 12px rgba(0,0,0,.2);
+      transition: background .15s, transform .2s;
+      writing-mode: vertical-rl;
+      letter-spacing: 2px;
+    }
+    #a11y-toggle:hover { background: #0055d4; }
+    #a11y-toggle:focus-visible { outline: 3px solid #fef08a; outline-offset: 2px; }
+
+    #a11y-panel {
+      position: fixed;
+      left: -280px;
+      top: 0;
+      bottom: 0;
+      width: 270px;
+      background: var(--white);
+      border-right: none;
+      border-left: 2px solid var(--blue);
+      box-shadow: 4px 0 24px rgba(0,0,0,.18);
+      z-index: 999;
+      transition: left .28s cubic-bezier(.4,0,.2,1);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    #a11y-panel.open { left: 0; }
+
+    .a11y-header {
+      background: var(--blue);
+      color: white;
+      padding: 16px 18px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .a11y-close {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 1.3rem;
+      line-height: 1;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .a11y-close:hover { background: rgba(255,255,255,.2); }
+
+    .a11y-section {
+      padding: 14px 18px 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .a11y-section:last-child { border-bottom: none; }
+    .a11y-section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 10px;
+    }
+
+    .a11y-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 9px 12px;
+      margin-bottom: 6px;
+      background: var(--light-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.83rem;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      text-align: right;
+      direction: rtl;
+      transition: background .12s, border-color .12s;
+    }
+    .a11y-btn:hover { background: #e8f0fe; border-color: var(--blue); color: var(--blue); }
+    .a11y-btn.on { background: var(--blue); border-color: var(--blue); color: white; }
+    .a11y-btn .a11y-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    .font-size-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .font-size-row span {
+      flex: 1;
+      text-align: center;
+      font-size: 0.83rem;
+      color: var(--secondary);
+    }
+    .fs-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--light-bg);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text);
+      transition: background .12s;
+      flex-shrink: 0;
+    }
+    .fs-btn:hover { background: #e8f0fe; border-color: var(--blue); color: var(--blue); }
+
+    .a11y-reset {
+      margin: 10px 18px 18px;
+      width: calc(100% - 36px);
+      padding: 9px;
+      background: #fee2e2;
+      border: 1.5px solid #fca5a5;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: #b91c1c;
+      cursor: pointer;
+      direction: rtl;
+      transition: background .12s;
+    }
+    .a11y-reset:hover { background: #fecaca; }
+
+    /* Accessibility modes applied to <html> */
+    html.a11y-contrast { filter: contrast(1.6); }
+    html.a11y-grayscale { filter: grayscale(1); }
+    html.a11y-contrast.a11y-grayscale { filter: contrast(1.6) grayscale(1); }
+    html.a11y-big-cursor, html.a11y-big-cursor * { cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="8" cy="8" r="6" fill="%23000"/></svg>') 8 8, auto !important; }
+    html.a11y-underline-links a { text-decoration: underline !important; }
+    html.a11y-readable * { font-family: Arial, sans-serif !important; letter-spacing: .02em !important; }
+    html.a11y-no-anim *, html.a11y-no-anim *::before, html.a11y-no-anim *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+    html.a11y-highlight-focus *:focus {
+      outline: 3px solid #f59e0b !important;
+      outline-offset: 3px !important;
+    }
+    html.a11y-text-spacing {
+      --line-height-boost: 1;
+    }
+    html.a11y-text-spacing p, html.a11y-text-spacing li, html.a11y-text-spacing span {
+      line-height: 2 !important;
+      letter-spacing: .06em !important;
+      word-spacing: .2em !important;
+    }
+  </style>
+</head>
+<body>
+
+<!-- SCROLL PROGRESS BAR -->
+<div id="progress-bar"></div>
+
+<!-- ACCESSIBILITY TOGGLE -->
+<button id="a11y-toggle" onclick="toggleA11yPanel()" aria-label="פתח תפריט הנגשה" title="הנגשה">
+  &#x267F;
+</button>
+
+<!-- ACCESSIBILITY PANEL -->
+<aside id="a11y-panel" role="dialog" aria-label="תפריט הנגשה" aria-modal="true">
+  <div class="a11y-header">
+    <span>&#x267F; הנגשה</span>
+    <button class="a11y-close" onclick="toggleA11yPanel()" aria-label="סגור">&#x2715;</button>
+  </div>
+
+  <div class="a11y-section">
+    <div class="a11y-section-title">גודל טקסט</div>
+    <div class="font-size-row">
+      <button class="fs-btn" onclick="changeFontSize(-1)" aria-label="הקטן גופן">A-</button>
+      <span id="fs-label">רגיל</span>
+      <button class="fs-btn" onclick="changeFontSize(1)" aria-label="הגדל גופן">A+</button>
+    </div>
+  </div>
+
+  <div class="a11y-section">
+    <div class="a11y-section-title">צבע ותצוגה</div>
+    <button class="a11y-btn" id="btn-contrast" onclick="toggleA11y('a11y-contrast', this)">
+      <span class="a11y-icon">&#x25D1;</span> ניגודיות גבוהה
+    </button>
+    <button class="a11y-btn" id="btn-grayscale" onclick="toggleA11y('a11y-grayscale', this)">
+      <span class="a11y-icon">&#x25A1;</span> גווני אפור
+    </button>
+  </div>
+
+  <div class="a11y-section">
+    <div class="a11y-section-title">קריאות</div>
+    <button class="a11y-btn" id="btn-readable" onclick="toggleA11y('a11y-readable', this)">
+      <span class="a11y-icon">&#x1F4C4;</span> גופן קריא (Arial)
+    </button>
+    <button class="a11y-btn" id="btn-spacing" onclick="toggleA11y('a11y-text-spacing', this)">
+      <span class="a11y-icon">&#x21C4;</span> ריווח מוגבר
+    </button>
+    <button class="a11y-btn" id="btn-underline" onclick="toggleA11y('a11y-underline-links', this)">
+      <span class="a11y-icon">&#x1F517;</span> הדגש קישורים
+    </button>
+  </div>
+
+  <div class="a11y-section">
+    <div class="a11y-section-title">ניווט ותנועה</div>
+    <button class="a11y-btn" id="btn-focus" onclick="toggleA11y('a11y-highlight-focus', this)">
+      <span class="a11y-icon">&#x25A3;</span> הדגש פוקוס
+    </button>
+    <button class="a11y-btn" id="btn-no-anim" onclick="toggleA11y('a11y-no-anim', this)">
+      <span class="a11y-icon">&#x23F8;</span> עצור אנימציות
+    </button>
+    <button class="a11y-btn" id="btn-cursor" onclick="toggleA11y('a11y-big-cursor', this)">
+      <span class="a11y-icon">&#x1F5B1;</span> סמן גדול
+    </button>
+  </div>
+
+  <button class="a11y-reset" onclick="resetA11y()">&#x21BA; איפוס הגדרות הנגשה</button>
+</aside>
+
+<!-- TOP HEADER BAR -->
+<header class="top-bar">
+  <img src="https://me.health.gov.il/media/224edbtw/logo-desktop-header.svg" class="moh-logo" alt="משרד הבריאות" onerror="this.style.display='none'">
+  <div class="top-bar-actions">
+    <button class="btn-top btn-darkmode" onclick="toggleDarkMode()" id="dark-btn" title="מצב לילה">
+      <svg id="dark-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <button class="btn-top" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      הדפסה
+    </button>
+    <button class="btn-top btn-top-primary" onclick="sendEmail()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      שלח במייל
+    </button>
+  </div>
+</header>
+
+<!-- NEWS TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-badge">&#128240; חדשות</div>
+  <div class="ticker-overflow">
+    <div class="ticker-track" id="ticker-track"><span class="tick-item">מוכנות מערכת הבריאות - מבצע “שאגת הארי”</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">ביטול הצורך  בהרתחת מים ביישובים ובאתרים בית קשת, בניין מועצה אזורית גליל תחתון, אזור תעשייה כדורי, כפר קיש (שכונת הרחבה), דבורייה, שיבלי-אום אל-גאנם וכפר תבור</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">משרד הבריאות מקדם חיסוני תלמידים שיתבצעו במתחם תת קרקעי ממוגן באסותא רמת החייל</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מרכז המידע של משרד הבריאות לזמן מלחמה</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">עולם הדאטה של משרד הבריאות</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">אתר הוֹרוּת והורים</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">אתר בנפש בריאה</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">אתר הגיל השלישי</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">אתר אפשריבריא</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">אתר מנהל האֲחָיוּת</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">שר הבריאות</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מנכ&quot;ל משרד הבריאות</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">תוכנית החיסונים</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">שאלון חצבת</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מידע לפי גיל</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">טיפת חלב</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מחשבון גדילה</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מחשבון עלייה במשקל בהריון</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">תזונת תינוקות</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מחשבון צריכת קלוריות</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מחשבון פעילות גופנית</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">לקבל טיפול נפשי</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">טיפול בהתמכרויות</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">אשפוז פסיכיאטרי</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מניעת אובדנות</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#9670;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tick-item">מוכנות מערכת הבריאות - מבצע “שאגת הארי”</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">ביטול הצורך  בהרתחת מים ביישובים ובאתרים בית קשת, בניין מועצה אזורית גליל תחתון, אזור תעשייה כדורי, כפר קיש (שכונת הרחבה), דבורייה, שיבלי-אום אל-גאנם וכפר תבור</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">משרד הבריאות מקדם חיסוני תלמידים שיתבצעו במתחם תת קרקעי ממוגן באסותא רמת החייל</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מרכז המידע של משרד הבריאות לזמן מלחמה</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">עולם הדאטה של משרד הבריאות</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">אתר הוֹרוּת והורים</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">אתר בנפש בריאה</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">אתר הגיל השלישי</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">אתר אפשריבריא</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">אתר מנהל האֲחָיוּת</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">שר הבריאות</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מנכ&quot;ל משרד הבריאות</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">תוכנית החיסונים</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">שאלון חצבת</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מידע לפי גיל</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">טיפת חלב</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מחשבון גדילה</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מחשבון עלייה במשקל בהריון</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">תזונת תינוקות</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מחשבון צריכת קלוריות</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מחשבון פעילות גופנית</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">לקבל טיפול נפשי</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">טיפול בהתמכרויות</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">אשפוז פסיכיאטרי</span>&nbsp;&nbsp;&#9670;&nbsp;&nbsp;<span class="tick-item">מניעת אובדנות</span></div>
+  </div>
+</div>
+
+<!-- HERO BANNER -->
+<section class="hero">
+
+  <!-- ECG heartbeat wave -->
+  <svg class="hero-ecg" viewBox="0 0 1440 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="ecg-fade" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="white" stop-opacity="0"/>
+        <stop offset="8%" stop-color="white" stop-opacity="1"/>
+        <stop offset="92%" stop-color="white" stop-opacity="1"/>
+        <stop offset="100%" stop-color="white" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path d="M0,45 L80,45 L95,45 L105,38 L112,52 L118,45 L130,45
+             L142,45 L148,10 L155,80 L162,20 L168,50 L175,45
+             L195,45 L210,38 L217,52 L223,45 L235,45
+             L360,45 L375,45 L385,38 L392,52 L398,45 L410,45
+             L422,45 L428,10 L435,80 L442,20 L448,50 L455,45
+             L475,45 L490,38 L497,52 L503,45 L515,45
+             L640,45 L655,45 L665,38 L672,52 L678,45 L690,45
+             L702,45 L708,10 L715,80 L722,20 L728,50 L735,45
+             L755,45 L770,38 L777,52 L783,45 L795,45
+             L920,45 L935,45 L945,38 L952,52 L958,45 L970,45
+             L982,45 L988,10 L995,80 L1002,20 L1008,50 L1015,45
+             L1035,45 L1050,38 L1057,52 L1063,45 L1075,45
+             L1200,45 L1215,45 L1225,38 L1232,52 L1238,45 L1250,45
+             L1262,45 L1268,10 L1275,80 L1282,20 L1288,50 L1295,45
+             L1315,45 L1330,38 L1337,52 L1343,45 L1355,45 L1440,45"
+      fill="none" stroke="url(#ecg-fade)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+
+  <div class="hero-inner">
+    <h1 class="hero-title">עדכוני משרד הבריאות</h1>
+    <p class="hero-tagline">מה התחדש באתרי משרד הבריאות השונים בימים האחרונים?</p>
+    <p class="hero-sub">
+      עודכן לאחרונה: <strong>21.03.2026  20:29</strong>
+      <span class="refresh-countdown">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        עדכון בעוד <span class="cd-val" id="cd-val">...</span> דקות
+      </span>
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <strong id="stat-total" data-target="43">0</strong>
+        כתבות וידיעות
+      </div>
+      <div class="hero-stat">
+        <strong id="stat-new" data-target="0">0</strong>
+        פריטים חדשים
+      </div>
+      <div class="hero-stat">
+        <strong id="stat-src" data-target="5">0</strong>
+        מקורות מידע
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="search-icon-inner">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
+    <input type="text" id="search" placeholder="חיפוש בכל הכתבות..." oninput="filterCards()" autocomplete="off">
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">נושא:</span>
+    <button class="filter-pill active" onclick="setTagFilter('', this)">הכל</button>
+    <button class="filter-pill" onclick="setTagFilter('חיסונים', this)">חיסונים</button>
+    <button class="filter-pill" onclick="setTagFilter('בריאות נפש', this)">בריאות נפש</button>
+    <button class="filter-pill" onclick="setTagFilter('ילדים', this)">ילדים</button>
+    <button class="filter-pill" onclick="setTagFilter('חירום', this)">חירום</button>
+    <button class="filter-pill" onclick="setTagFilter('תזונה', this)">תזונה</button>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">מקור:</span>
+    <button class="filter-pill active-teal" id="site-all-btn" onclick="setSiteFilter('', this)">כל המקורות</button>
+    <button class="filter-pill" onclick="setSiteFilter('משרד הבריאות - פורטל ראשי',this)">משרד הבריאות - פורטל ראשי</button>
+    <button class="filter-pill" onclick="setSiteFilter('פורטל הורים',this)">פורטל הורים</button>
+    <button class="filter-pill" onclick="setSiteFilter('בריאות הנפש',this)">בריאות הנפש</button>
+    <button class="filter-pill" onclick="setSiteFilter('הגיל השלישי',this)">הגיל השלישי</button>
+    <button class="filter-pill" onclick="setSiteFilter('אפשריבריא',this)">אפשריבריא</button>
+    
+  </div>
+  <div class="filter-group">
+    <button class="filter-pill" id="bookmarks-btn" onclick="toggleBookmarksFilter(this)">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-left:4px"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      שמורים
+    </button>
+  </div>
+  
+</div>
+
+<!-- MAIN GRID -->
+<main class="container">
+  <div class="grid" id="grid">
+    <article class="news-card" data-title="מוכנות מערכת הבריאות - מבצע “שאגת הארי”" data-tags="חירום" data-site="משרד הבריאות - פורטל ראשי" data-isnew="0" data-link="https://www.gov.il/he/pages/20032026-01" style="animation-delay:0.00s">
+  <div class="card-thumb"><img src="https://www.gov.il/BlobFolder/office/ministry_of_health/he/ministry_of_health.png" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #1b2030, #2d4a7a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2d4a7a15;color:#2d4a7a;border-color:#2d4a7a30">משרד הבריאות - פורטל ראשי</span>
+      <span class="card-date">20.03.2026</span>
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://www.gov.il/he/pages/20032026-01" target="_blank" class="card-title-link">מוכנות מערכת הבריאות - מבצע “שאגת הארי”</a></h2>
+    <p class="card-desc">משרד הבריאות מעדכן כי מתחילת מבצע שאגת הארי, נכון ליום שישי ה-20 במרץ 2026 בשעה 07:00 בבוקר פונו לבתי החולים 4,099 אנשים, מתוכם מאושפזים כעת 80 אנשים.</p>
+    <a href="https://www.gov.il/he/pages/20032026-01" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="ביטול הצורך  בהרתחת מים ביישובים ובאתרים בית קשת, בניין מועצה אזורית גליל תחתון, אזור תעשייה כדורי, כפר קיש (שכונת הרחבה), דבורייה, שיבלי-אום אל-גאנם וכפר תבור" data-tags="חירום" data-site="משרד הבריאות - פורטל ראשי" data-isnew="0" data-link="https://www.gov.il/he/pages/19032026-03" style="animation-delay:0.04s">
+  <div class="card-thumb"><img src="https://www.gov.il/BlobFolder/office/ministry_of_health/he/ministry_of_health.png" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #1b2030, #2d4a7a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2d4a7a15;color:#2d4a7a;border-color:#2d4a7a30">משרד הבריאות - פורטל ראשי</span>
+      <span class="card-date">19.03.2026</span>
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://www.gov.il/he/pages/19032026-03" target="_blank" class="card-title-link">ביטול הצורך  בהרתחת מים ביישובים ובאתרים בית קשת, בניין מועצה אזורית גליל תחתון, אזור תעשייה כדורי, כפר קיש (שכונת הרחבה), דבורייה, שיבלי-אום אל-גאנם וכפר תבור</a></h2>
+    <p class="card-desc">משרד הבריאות מעדכן על ביטול הצורך  בהרתחת מים ביישובים ובאתרים בית קשת, בניין מועצה אזורית גליל תחתון, אזור תעשייה כדורי, כפר קיש (שכונת הרחבה), דבורייה, שיבלי-אום אל-גאנם וכפר תבור</p>
+    <a href="https://www.gov.il/he/pages/19032026-03" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="משרד הבריאות מקדם חיסוני תלמידים שיתבצעו במתחם תת קרקעי ממוגן באסותא רמת החייל" data-tags="חיסונים חירום" data-site="משרד הבריאות - פורטל ראשי" data-isnew="0" data-link="https://www.gov.il/he/pages/19032026-01" style="animation-delay:0.08s">
+  <div class="card-thumb"><img src="https://www.gov.il/BlobFolder/office/ministry_of_health/he/ministry_of_health.png" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #1b2030, #2d4a7a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2d4a7a15;color:#2d4a7a;border-color:#2d4a7a30">משרד הבריאות - פורטל ראשי</span>
+      <span class="card-date">19.03.2026</span>
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://www.gov.il/he/pages/19032026-01" target="_blank" class="card-title-link">משרד הבריאות מקדם חיסוני תלמידים שיתבצעו במתחם תת קרקעי ממוגן באסותא רמת החייל</a></h2>
+    <p class="card-desc">בצל המלחמה, לראשונה: משרד הבריאות מקדם חיסוני תלמידים שיתבצעו במתחם תת קרקעי ממוגן באסותא רמת החייל</p>
+    <a href="https://www.gov.il/he/pages/19032026-01" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="מרכז המידע של משרד הבריאות לזמן מלחמה" data-tags="חירום" data-site="משרד הבריאות - פורטל ראשי" data-isnew="0" data-link="https://www.gov.il/he/pages/sheagathaari" style="animation-delay:0.12s">
+  <div class="card-thumb card-thumb-gradient" style="background:linear-gradient(135deg, #1b2030, #2d4a7a)">
+              <span class="thumb-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+            </div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2d4a7a15;color:#2d4a7a;border-color:#2d4a7a30">משרד הבריאות - פורטל ראשי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://www.gov.il/he/pages/sheagathaari" target="_blank" class="card-title-link">מרכז המידע של משרד הבריאות לזמן מלחמה</a></h2>
+    
+    <a href="https://www.gov.il/he/pages/sheagathaari" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="עולם הדאטה של משרד הבריאות" data-tags="" data-site="משרד הבריאות - פורטל ראשי" data-isnew="0" data-link="https://datadashboard.health.gov.il/portal/dashboard/health" style="animation-delay:0.16s">
+  <div class="card-thumb card-thumb-gradient" style="background:linear-gradient(135deg, #1b2030, #2d4a7a)">
+              <span class="thumb-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+            </div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2d4a7a15;color:#2d4a7a;border-color:#2d4a7a30">משרד הבריאות - פורטל ראשי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://datadashboard.health.gov.il/portal/dashboard/health" target="_blank" class="card-title-link">עולם הדאטה של משרד הבריאות</a></h2>
+    <p class="card-desc">דשבורד הבריאות של משרד הבריאות הינו פורטל חדשני במגזר הציבורי ובכלל, להחצנה והנגשת נתונים לציבור הרחב. מטרת הדשבורד להעמיק את הידע על תחומי האחריות של משרד הבריאות, לעודד מחקר, דיון, גיבוש תובנות ופעולות מבוססות נתונים. משרד הבריאות רואה חשיבות רבה בהשבחת נכסי המידע והצגתם לציבור בצורה פשוטה ונוחה, </p>
+    <a href="https://datadashboard.health.gov.il/portal/dashboard/health" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="אתר הוֹרוּת והורים" data-tags="ילדים" data-site="משרד הבריאות - פורטל ראשי" data-isnew="0" data-link="https://me.health.gov.il/parenting/" style="animation-delay:0.20s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/aqzpy23e/dscf9937-s-1.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #1b2030, #2d4a7a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2d4a7a15;color:#2d4a7a;border-color:#2d4a7a30">משרד הבריאות - פורטל ראשי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/parenting/" target="_blank" class="card-title-link">אתר הוֹרוּת והורים</a></h2>
+    <p class="card-desc">מתכנון ההורות ועד גידול ילדים – אתר משרד הבריאות להורים מציע כלים ומידע אמין ועדכני על פריון, הריון, לידה והתפתחות ילדים.</p>
+    <a href="https://me.health.gov.il/parenting/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="אתר בנפש בריאה" data-tags="בריאות נפש" data-site="משרד הבריאות - פורטל ראשי" data-isnew="0" data-link="https://me.health.gov.il/mental-health/" style="animation-delay:0.24s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/x3qbibdz/dscf2598_flip.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #1b2030, #2d4a7a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2d4a7a15;color:#2d4a7a;border-color:#2d4a7a30">משרד הבריאות - פורטל ראשי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/mental-health/" target="_blank" class="card-title-link">אתר בנפש בריאה</a></h2>
+    <p class="card-desc">מידע על זכויות והטבות, שירותים בקהילה, אפשרויות טיפול, סל שיקום ואשפוז – הכל מרוכז במקום אחד, אתר המידע של משרד הבריאות לבריאות הנפש.</p>
+    <a href="https://me.health.gov.il/mental-health/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="אתר הגיל השלישי" data-tags="חיסונים בריאות נפש תזונה" data-site="משרד הבריאות - פורטל ראשי" data-isnew="0" data-link="https://me.health.gov.il/older-adult/" style="animation-delay:0.28s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/34hfpcue/vaccinations.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #1b2030, #2d4a7a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2d4a7a15;color:#2d4a7a;border-color:#2d4a7a30">משרד הבריאות - פורטל ראשי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/older-adult/" target="_blank" class="card-title-link">אתר הגיל השלישי</a></h2>
+    <p class="card-desc">כל המידע על זכויות והטבות, אשפוז בגיל המבוגר, חיסונים בגיל השלישי, תזונה בריאה, פעילות גופנית ועוד – הכל במקום אחד, אתר המידע של משרד הבריאות לבני הגיל השלישי.</p>
+    <a href="https://me.health.gov.il/older-adult/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="אתר אפשריבריא" data-tags="" data-site="משרד הבריאות - פורטל ראשי" data-isnew="0" data-link="https://efsharibari.health.gov.il/" style="animation-delay:0.32s">
+  <div class="card-thumb"><img src="http://efsharibari.health.gov.il/media/1760/logo-efsharibari-256-256.png" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #1b2030, #2d4a7a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2d4a7a15;color:#2d4a7a;border-color:#2d4a7a30">משרד הבריאות - פורטל ראשי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://efsharibari.health.gov.il/" target="_blank" class="card-title-link">אתר אפשריבריא</a></h2>
+    
+    <a href="https://efsharibari.health.gov.il/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="אתר מנהל האֲחָיוּת" data-tags="" data-site="משרד הבריאות - פורטל ראשי" data-isnew="0" data-link="https://www1.health.gov.il/nursing/" style="animation-delay:0.36s">
+  <div class="card-thumb card-thumb-gradient" style="background:linear-gradient(135deg, #1b2030, #2d4a7a)">
+              <span class="thumb-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+            </div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2d4a7a15;color:#2d4a7a;border-color:#2d4a7a30">משרד הבריאות - פורטל ראשי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://www1.health.gov.il/nursing/" target="_blank" class="card-title-link">אתר מנהל האֲחָיוּת</a></h2>
+    
+    <a href="https://www1.health.gov.il/nursing/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="שר הבריאות" data-tags="" data-site="משרד הבריאות - פורטל ראשי" data-isnew="0" data-link="https://www.gov.il/he/pages/minister-of-health" style="animation-delay:0.40s">
+  <div class="card-thumb card-thumb-gradient" style="background:linear-gradient(135deg, #1b2030, #2d4a7a)">
+              <span class="thumb-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+            </div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2d4a7a15;color:#2d4a7a;border-color:#2d4a7a30">משרד הבריאות - פורטל ראשי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://www.gov.il/he/pages/minister-of-health" target="_blank" class="card-title-link">שר הבריאות</a></h2>
+    
+    <a href="https://www.gov.il/he/pages/minister-of-health" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="מנכ&quot;ל משרד הבריאות" data-tags="" data-site="משרד הבריאות - פורטל ראשי" data-isnew="0" data-link="https://www.gov.il/he/pages/ministry-director-general" style="animation-delay:0.44s">
+  <div class="card-thumb card-thumb-gradient" style="background:linear-gradient(135deg, #1b2030, #2d4a7a)">
+              <span class="thumb-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+            </div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2d4a7a15;color:#2d4a7a;border-color:#2d4a7a30">משרד הבריאות - פורטל ראשי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://www.gov.il/he/pages/ministry-director-general" target="_blank" class="card-title-link">מנכ&quot;ל משרד הבריאות</a></h2>
+    
+    <a href="https://www.gov.il/he/pages/ministry-director-general" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="תוכנית החיסונים" data-tags="חיסונים ילדים" data-site="פורטל הורים" data-isnew="0" data-link="https://me.health.gov.il/parenting/raising-children/immunization-schedule/babies-immunization-schedule/" style="animation-delay:0.48s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/aqzpy23e/dscf9937-s-1.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #017fa6, #00c2e0)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#017FA615;color:#017FA6;border-color:#017FA630">פורטל הורים</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/parenting/raising-children/immunization-schedule/babies-immunization-schedule/" target="_blank" class="card-title-link">תוכנית החיסונים</a></h2>
+    <p class="card-desc">משרד הבריאות ממליץ על מתן חיסונים לילדים מגיל הלידה ועד בית הספר. היכנסו וקבלו מידע על אילו חיסונים מקבלים בטיפת חלב ואילו בבתי הספר? ונגד אילו מחלות חשוב לחסן?</p>
+    <a href="https://me.health.gov.il/parenting/raising-children/immunization-schedule/babies-immunization-schedule/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="שאלון חצבת" data-tags="חיסונים" data-site="פורטל הורים" data-isnew="0" data-link="https://me.health.gov.il/measles-vaccine-check/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/mfjnezc4/virus.png" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #017fa6, #00c2e0)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#017FA615;color:#017FA6;border-color:#017FA630">פורטל הורים</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/measles-vaccine-check/" target="_blank" class="card-title-link">שאלון חצבת</a></h2>
+    <p class="card-desc">האם עליכם להתחסן נגד חצבת? ענו על שאלון קצר וקבלו תשובה מיידית. בדיקת צורך בחיסון לפי גיל ומצב חיסוני, למי שלא נחשף לחולה. היכנסו לבדיקה מהירה</p>
+    <a href="https://me.health.gov.il/measles-vaccine-check/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="מידע לפי גיל" data-tags="ילדים" data-site="פורטל הורים" data-isnew="0" data-link="https://me.health.gov.il/parenting/age-menu/0-6-weeks/grow-0-6-weeks/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/aqzpy23e/dscf9937-s-1.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #017fa6, #00c2e0)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#017FA615;color:#017FA6;border-color:#017FA630">פורטל הורים</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/parenting/age-menu/0-6-weeks/grow-0-6-weeks/" target="_blank" class="card-title-link">מידע לפי גיל</a></h2>
+    <p class="card-desc">לתינוקות יש קצב התפתחות אישי, ועדיין יש שלבים צפויים בהתפתחותם. אלה אבני הדרך הצפויות מגיל לידה עד גיל 6 שבועות, והדרכים שיכולות לקדם את התינוק או התינוקת.</p>
+    <a href="https://me.health.gov.il/parenting/age-menu/0-6-weeks/grow-0-6-weeks/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="טיפת חלב" data-tags="חיסונים ילדים" data-site="פורטל הורים" data-isnew="0" data-link="https://me.health.gov.il/parenting/raising-children/infant-and-child-development/tipat-halav/tipat-halav-schedule/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/aqzpy23e/dscf9937-s-1.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #017fa6, #00c2e0)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#017FA615;color:#017FA6;border-color:#017FA630">פורטל הורים</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/parenting/raising-children/infant-and-child-development/tipat-halav/tipat-halav-schedule/" target="_blank" class="card-title-link">טיפת חלב</a></h2>
+    <p class="card-desc">מה עושים בטיפת חלב? מעקב גדילה והתפתחות התינוק, חיסוני השגרה, בדיקות רפואיות והדרכות בנושא האכלה, שינה, שפה, בטיחות, משחק, ויטמין D ותוסף ברזל</p>
+    <a href="https://me.health.gov.il/parenting/raising-children/infant-and-child-development/tipat-halav/tipat-halav-schedule/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="מחשבון גדילה" data-tags="ילדים" data-site="פורטל הורים" data-isnew="0" data-link="https://me.health.gov.il/growth-calculator/" style="animation-delay:0.50s">
+  <div class="card-thumb card-thumb-gradient" style="background:linear-gradient(135deg, #017fa6, #00c2e0)">
+              <span class="thumb-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+            </div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#017FA615;color:#017FA6;border-color:#017FA630">פורטל הורים</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/growth-calculator/" target="_blank" class="card-title-link">מחשבון גדילה</a></h2>
+    <p class="card-desc">לקבלת עקומת גדילה אישית, הכניסו את נתוני המשקל והגובה של הילדים</p>
+    <a href="https://me.health.gov.il/growth-calculator/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="מחשבון עלייה במשקל בהריון" data-tags="ילדים" data-site="פורטל הורים" data-isnew="0" data-link="https://me.health.gov.il/pregnant-calculator/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/u3hjhls4/pregnancy-social.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #017fa6, #00c2e0)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#017FA615;color:#017FA6;border-color:#017FA630">פורטל הורים</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/pregnant-calculator/" target="_blank" class="card-title-link">מחשבון עלייה במשקל בהריון</a></h2>
+    <p class="card-desc">במהלך ההריון את צריכה לעלות במשקל. קצב העלייה והרגלי האכילה בזמן ההריון יכולים להשפיע על התינוק או התינוקת. הכניסי ערכים למחשבון ותקבלי עקומת משקל מותאמת אישית.</p>
+    <a href="https://me.health.gov.il/pregnant-calculator/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="תזונת תינוקות" data-tags="חיסונים ילדים תזונה" data-site="פורטל הורים" data-isnew="0" data-link="https://me.health.gov.il/parenting/raising-children/baby-nutrition/nursing/breastfeeding-benefits/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/aqzpy23e/dscf9937-s-1.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #017fa6, #00c2e0)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#017FA615;color:#017FA6;border-color:#017FA630">פורטל הורים</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/parenting/raising-children/baby-nutrition/nursing/breastfeeding-benefits/" target="_blank" class="card-title-link">תזונת תינוקות</a></h2>
+    <p class="card-desc">הנקה היא המשך טבעי להריון וללידה והיא מועילה לאם ולתינוק. חלב אם מכיל את רכיבי התזונה המתאימים ביותר לתינוק או לתינוקת ומחזק את מערכת החיסון</p>
+    <a href="https://me.health.gov.il/parenting/raising-children/baby-nutrition/nursing/breastfeeding-benefits/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="מחשבון צריכת קלוריות" data-tags="תזונה" data-site="פורטל הורים" data-isnew="0" data-link="https://me.health.gov.il/dri-calculator/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/kc0ncumd/dri-social.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #017fa6, #00c2e0)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#017FA615;color:#017FA6;border-color:#017FA630">פורטל הורים</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/dri-calculator/" target="_blank" class="card-title-link">מחשבון צריכת קלוריות</a></h2>
+    <p class="card-desc">כמה קלוריות נדרשות לכם ביום? הזינו כמה נתונים למחשבון ותקבלו המלצה מדויקת, למען תזונה בריאה ושמירה על משקל תקין</p>
+    <a href="https://me.health.gov.il/dri-calculator/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="מחשבון פעילות גופנית" data-tags="תזונה" data-site="פורטל הורים" data-isnew="0" data-link="https://me.health.gov.il/met-calculator/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/zddh0ilj/met-social.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #017fa6, #00c2e0)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#017FA615;color:#017FA6;border-color:#017FA630">פורטל הורים</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/met-calculator/" target="_blank" class="card-title-link">מחשבון פעילות גופנית</a></h2>
+    <p class="card-desc">מחשבון לחישוב שריפת קלוריות לפי סוג פעילות, משך הזמן והמשקל שלכם. הזינו נתונים וקבלו הערכה מדויקת.</p>
+    <a href="https://me.health.gov.il/met-calculator/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="לקבל טיפול נפשי" data-tags="בריאות נפש" data-site="בריאות הנפש" data-isnew="0" data-link="https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/community-treatment/treatment-services/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/x3qbibdz/dscf2598_flip.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #4a6fa5, #6b4fa5)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#4a6fa515;color:#4a6fa5;border-color:#4a6fa530">בריאות הנפש</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/community-treatment/treatment-services/" target="_blank" class="card-title-link">לקבל טיפול נפשי</a></h2>
+    <p class="card-desc">במסגרת השירות הציבורי בבריאות הנפש תוכלו להיעזר במגוון שירותים, שכוללים טיפולים מסוגים שונים דרך קופות החולים, ביקור בחדר מיון פסיכיאטרי ועד לאשפוז פסיכיאטרי בבתי חולים.</p>
+    <a href="https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/community-treatment/treatment-services/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="טיפול בהתמכרויות" data-tags="בריאות נפש" data-site="בריאות הנפש" data-isnew="0" data-link="https://me.health.gov.il/mental-health/information-and-updates/addictions/about/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/x3qbibdz/dscf2598_flip.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #4a6fa5, #6b4fa5)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#4a6fa515;color:#4a6fa5;border-color:#4a6fa530">בריאות הנפש</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/mental-health/information-and-updates/addictions/about/" target="_blank" class="card-title-link">טיפול בהתמכרויות</a></h2>
+    <p class="card-desc">מהי התמכרות, איך היא מתפתחת, אילו גורמים עלולים להוביל אליה ומה ההשפעות האפשריות על הגוף, הנפש ואורח החיים? כל התשובות - בפנים</p>
+    <a href="https://me.health.gov.il/mental-health/information-and-updates/addictions/about/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="אשפוז פסיכיאטרי" data-tags="בריאות נפש" data-site="בריאות הנפש" data-isnew="0" data-link="https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/psychiatric-hospitalization/psychiatric-wards/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/x3qbibdz/dscf2598_flip.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #4a6fa5, #6b4fa5)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#4a6fa515;color:#4a6fa5;border-color:#4a6fa530">בריאות הנפש</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/psychiatric-hospitalization/psychiatric-wards/" target="_blank" class="card-title-link">אשפוז פסיכיאטרי</a></h2>
+    <p class="card-desc">ההחלטה על אשפוז פסיכיאטרי נקבעת בשיתוף פעולה עם המטופל או המטופלת והצוות הרפואי, תוך התייחסות למצב הנפשי, לצרכים האישיים ולמטרות הטיפול. על ההבדלים מחלקה פתוחה לסגורה.</p>
+    <a href="https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/psychiatric-hospitalization/psychiatric-wards/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="מניעת אובדנות" data-tags="" data-site="בריאות הנפש" data-isnew="0" data-link="https://me.health.gov.il/mental-health/information-and-updates/prevention-of-suicide/early-detection/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/x3qbibdz/dscf2598_flip.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #4a6fa5, #6b4fa5)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#4a6fa515;color:#4a6fa5;border-color:#4a6fa530">בריאות הנפש</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/mental-health/information-and-updates/prevention-of-suicide/early-detection/" target="_blank" class="card-title-link">מניעת אובדנות</a></h2>
+    <p class="card-desc">המיתוס שאומר ש&quot;מי שרוצה להתאבד בסוף יתאבד&quot; הוא שגוי לחלוטין! אילו אמצעי התערבות רגשיים, התנהגותיים, תרופתיים וסביבתיים, נמצאו יעילים למניעת אובדנות? כל הפרטים לפניכם</p>
+    <a href="https://me.health.gov.il/mental-health/information-and-updates/prevention-of-suicide/early-detection/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="מרכזי חוסן" data-tags="חירום" data-site="בריאות הנפש" data-isnew="0" data-link="https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/community-treatment/resilience-center/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/x3qbibdz/dscf2598_flip.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #4a6fa5, #6b4fa5)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#4a6fa515;color:#4a6fa5;border-color:#4a6fa530">בריאות הנפש</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/community-treatment/resilience-center/" target="_blank" class="card-title-link">מרכזי חוסן</a></h2>
+    <p class="card-desc">מה תפקידם של מרכזי החוסן, היכן הם ממוקמים ומי יכול להיעזר בהם? כל המידע על מרכזי חוסן בישראל, שמספקים סיוע רגשי במצבי משבר ובזמן חירום ותורמים לחזרה מהירה יותר לתפקוד</p>
+    <a href="https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/community-treatment/resilience-center/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="סל שיקום" data-tags="בריאות נפש" data-site="בריאות הנפש" data-isnew="0" data-link="https://me.health.gov.il/mental-health/therapy-rehabilitation/rehabilitation/rehabilitation-basket/about/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/x3qbibdz/dscf2598_flip.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #4a6fa5, #6b4fa5)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#4a6fa515;color:#4a6fa5;border-color:#4a6fa530">בריאות הנפש</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/mental-health/therapy-rehabilitation/rehabilitation/rehabilitation-basket/about/" target="_blank" class="card-title-link">סל שיקום</a></h2>
+    <p class="card-desc">כל מה שצריך לדעת על סל שיקום - סל שכולל שירותים מותאמים אישית, ושנועד לסייע למתמודדי ומתמודדות נפש להתקדם ולהשתלב בקהילה באופן מיטבי.</p>
+    <a href="https://me.health.gov.il/mental-health/therapy-rehabilitation/rehabilitation/rehabilitation-basket/about/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="מחשבון קוד סיעודי" data-tags="בריאות נפש" data-site="הגיל השלישי" data-isnew="0" data-link="https://me.health.gov.il/nursing-calculator/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/hisn00ch/dscf8301-1.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #2e7d6e, #1a5c4a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2e7d6e15;color:#2e7d6e;border-color:#2e7d6e30">הגיל השלישי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/nursing-calculator/" target="_blank" class="card-title-link">מחשבון קוד סיעודי</a></h2>
+    <p class="card-desc">המחשבון נועד להעריך את העלות הצפויה של ההשתתפות העצמית באשפוז סיעודי, על בסיס נתוני ההכנסות של המטופל ושל בני משפחתו. התוצאה שתתקבל היא הערכה ראשונית בלבד, שנועדה לספק תמונת מצב כללית לקראת התהליך.</p>
+    <a href="https://me.health.gov.il/nursing-calculator/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="שלבקת חוגרת" data-tags="חיסונים" data-site="הגיל השלישי" data-isnew="0" data-link="https://me.health.gov.il/older-adult/services-rights/vaccines/recommended-vaccines/shingles-vaccine/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/34hfpcue/vaccinations.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #2e7d6e, #1a5c4a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2e7d6e15;color:#2e7d6e;border-color:#2e7d6e30">הגיל השלישי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/older-adult/services-rights/vaccines/recommended-vaccines/shingles-vaccine/" target="_blank" class="card-title-link">שלבקת חוגרת</a></h2>
+    <p class="card-desc">החיסון נגד שלבקת חוגרת שנגרמת על ידי נגיף וריצלה יכול למנוע את הופעת המחלה או את חומרת התסמינים שלה, בעיקר כאבים קשים שיכולים להימשך חודשים ושלפוחיות מגרדות.</p>
+    <a href="https://me.health.gov.il/older-adult/services-rights/vaccines/recommended-vaccines/shingles-vaccine/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="הנחיות רפואיות מקדימות" data-tags="" data-site="הגיל השלישי" data-isnew="0" data-link="https://me.health.gov.il/older-adult/services-rights/before-saying-goodbye/advance-medical-directives/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/34hfpcue/vaccinations.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #2e7d6e, #1a5c4a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2e7d6e15;color:#2e7d6e;border-color:#2e7d6e30">הגיל השלישי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/older-adult/services-rights/before-saying-goodbye/advance-medical-directives/" target="_blank" class="card-title-link">הנחיות רפואיות מקדימות</a></h2>
+    <p class="card-desc">החוק מאפשר להכין הנחיות רפואיות מקדימות או למנות מיופה כוח למקרה שרופא אחראי הגדיר שנותרו לחולה עד 6 חודשים לחיות, והחולה אינו כשיר להורות על החלטות הקשורות למצבו. ההנחיות מחייבות את הצוות הרפואי</p>
+    <a href="https://me.health.gov.il/older-adult/services-rights/before-saying-goodbye/advance-medical-directives/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="מחשבון צריכת קלוריות" data-tags="תזונה" data-site="הגיל השלישי" data-isnew="0" data-link="https://me.health.gov.il/dri-calculator/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/kc0ncumd/dri-social.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #2e7d6e, #1a5c4a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2e7d6e15;color:#2e7d6e;border-color:#2e7d6e30">הגיל השלישי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/dri-calculator/" target="_blank" class="card-title-link">מחשבון צריכת קלוריות</a></h2>
+    <p class="card-desc">כמה קלוריות נדרשות לכם ביום? הזינו כמה נתונים למחשבון ותקבלו המלצה מדויקת, למען תזונה בריאה ושמירה על משקל תקין</p>
+    <a href="https://me.health.gov.il/dri-calculator/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="מחשבון פעילות גופנית" data-tags="תזונה" data-site="הגיל השלישי" data-isnew="0" data-link="https://me.health.gov.il/met-calculator/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/zddh0ilj/met-social.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #2e7d6e, #1a5c4a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2e7d6e15;color:#2e7d6e;border-color:#2e7d6e30">הגיל השלישי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/met-calculator/" target="_blank" class="card-title-link">מחשבון פעילות גופנית</a></h2>
+    <p class="card-desc">מחשבון לחישוב שריפת קלוריות לפי סוג פעילות, משך הזמן והמשקל שלכם. הזינו נתונים וקבלו הערכה מדויקת.</p>
+    <a href="https://me.health.gov.il/met-calculator/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="מחשבון למדידת מסת גוף" data-tags="" data-site="הגיל השלישי" data-isnew="0" data-link="https://me.health.gov.il/bmi-calculator/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="https://me.health.gov.il/media/pgpl2cuw/bmi-social.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #2e7d6e, #1a5c4a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2e7d6e15;color:#2e7d6e;border-color:#2e7d6e30">הגיל השלישי</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://me.health.gov.il/bmi-calculator/" target="_blank" class="card-title-link">מחשבון למדידת מסת גוף</a></h2>
+    <p class="card-desc">מחשבון BMI הוא נוסחה שמשתמשת בנתוני הגובה והמשקל שלך לצורך הערכת מסת גופך. הזינו את הנתונים במחשבון והתוצאה תסייע לזהות באיזו קטגורית מדד מסת גוף אתם נמצאים</p>
+    <a href="https://me.health.gov.il/bmi-calculator/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="איך לשמור על הפסקת עישון במצבי לחץ ומשבר" data-tags="" data-site="אפשריבריא" data-isnew="0" data-link="https://efsharibari.health.gov.il/well-being/smoking-prevention/stay-smoke-free/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="http://efsharibari.health.gov.il/media/2991/smoke-refuse.png" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #2a7d45, #1a5c2a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2a7d4515;color:#2a7d45;border-color:#2a7d4530">אפשריבריא</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://efsharibari.health.gov.il/well-being/smoking-prevention/stay-smoke-free/" target="_blank" class="card-title-link">איך לשמור על הפסקת עישון במצבי לחץ ומשבר</a></h2>
+    <p class="card-desc">חוששים לחזור לעשן? יש דרכים להימנע מעישון ולהתמודד עם המצב</p>
+    <a href="https://efsharibari.health.gov.il/well-being/smoking-prevention/stay-smoke-free/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="טיפים לשינה בזמן חירום" data-tags="חירום" data-site="אפשריבריא" data-isnew="0" data-link="https://efsharibari.health.gov.il/well-being/unstressed-and-healthy/sleeping-during-emergency/" style="animation-delay:0.50s">
+  <div class="card-thumb card-thumb-gradient" style="background:linear-gradient(135deg, #2a7d45, #1a5c2a)">
+              <span class="thumb-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+            </div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2a7d4515;color:#2a7d45;border-color:#2a7d4530">אפשריבריא</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://efsharibari.health.gov.il/well-being/unstressed-and-healthy/sleeping-during-emergency/" target="_blank" class="card-title-link">טיפים לשינה בזמן חירום</a></h2>
+    <p class="card-desc">בתקופה זו רבים מאיתנו חווים שינה לא סדירה וקושי בהירדמות. כדי לסייע לכם לשפר את איכות השינה ולצבור יותר שעות מנוחה, ריכזנו מספר טיפים פשוטים אך יעילים.</p>
+    <a href="https://efsharibari.health.gov.il/well-being/unstressed-and-healthy/sleeping-during-emergency/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="שגרת חירום עם ילדים" data-tags="ילדים חירום" data-site="אפשריבריא" data-isnew="0" data-link="https://efsharibari.health.gov.il/well-being/unstressed-and-healthy/children-coping/" style="animation-delay:0.50s">
+  <div class="card-thumb card-thumb-gradient" style="background:linear-gradient(135deg, #2a7d45, #1a5c2a)">
+              <span class="thumb-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+            </div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2a7d4515;color:#2a7d45;border-color:#2a7d4530">אפשריבריא</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://efsharibari.health.gov.il/well-being/unstressed-and-healthy/children-coping/" target="_blank" class="card-title-link">שגרת חירום עם ילדים</a></h2>
+    <p class="card-desc">איך מייצרים שגרה בחירום בבית? איך מחזקים את החוסן בקרב ילדים? מה אפשר לעשות ומה כדאי שלא? אפשריבריא בכל מצב.</p>
+    <a href="https://efsharibari.health.gov.il/well-being/unstressed-and-healthy/children-coping/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="יוצאים מהלחץ: על לחץ בעבודה והתמודדות עמו" data-tags="" data-site="אפשריבריא" data-isnew="0" data-link="https://efsharibari.health.gov.il/initiatives-and-projects/at-work-2/stress-free-at-work/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="http://efsharibari.health.gov.il/media/2588/stress-at-work.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #2a7d45, #1a5c2a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2a7d4515;color:#2a7d45;border-color:#2a7d4530">אפשריבריא</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://efsharibari.health.gov.il/initiatives-and-projects/at-work-2/stress-free-at-work/" target="_blank" class="card-title-link">יוצאים מהלחץ: על לחץ בעבודה והתמודדות עמו</a></h2>
+    <p class="card-desc">לחץ בעבודה הוא מאפיין שכיח של חיי העבודה בעולם המודרני. מהו לחץ ומה ניתן לעשות כדי למנוע אותו ולהפחית את השלכותיו השליליות?</p>
+    <a href="https://efsharibari.health.gov.il/initiatives-and-projects/at-work-2/stress-free-at-work/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="סוכר הוא הגורם העיקרי לעששת השיניים ולסבל מיותר" data-tags="ילדים" data-site="אפשריבריא" data-isnew="0" data-link="https://efsharibari.health.gov.il/eat-healthy/healthy-nutrition/beverages/sugars-and-dental-caries/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="http://efsharibari.health.gov.il/media/2510/sugars-and-dental-caries.png" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #2a7d45, #1a5c2a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2a7d4515;color:#2a7d45;border-color:#2a7d4530">אפשריבריא</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://efsharibari.health.gov.il/eat-healthy/healthy-nutrition/beverages/sugars-and-dental-caries/" target="_blank" class="card-title-link">סוכר הוא הגורם העיקרי לעששת השיניים ולסבל מיותר</a></h2>
+    <p class="card-desc">כיצד סוכר במזון ובמשקאות פוגע בשיניים? בישראל למחצית מהילדים בגיל הגן יש עששת. שומרים על היגיינת פה ושותים מים - לחיוך אפשריבריא</p>
+    <a href="https://efsharibari.health.gov.il/eat-healthy/healthy-nutrition/beverages/sugars-and-dental-caries/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="על שעות שינה והשמנה" data-tags="ילדים" data-site="אפשריבריא" data-isnew="0" data-link="https://efsharibari.health.gov.il/well-being/unstressed-and-healthy/sleep-duration-and-overweight/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="http://efsharibari.health.gov.il/media/1239/12101.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #2a7d45, #1a5c2a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2a7d4515;color:#2a7d45;border-color:#2a7d4530">אפשריבריא</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://efsharibari.health.gov.il/well-being/unstressed-and-healthy/sleep-duration-and-overweight/" target="_blank" class="card-title-link">על שעות שינה והשמנה</a></h2>
+    <p class="card-desc">לישון זה &quot;אפשריבריא&quot;. ויתור על שעות שינה, הן אצל ילדים והן אצל מבוגרים, גובה מחיר בריאותי כבד, תרתי משמע - הסיכוי להשמנת יתר גובר כשמותרים על שעות השינה.</p>
+    <a href="https://efsharibari.health.gov.il/well-being/unstressed-and-healthy/sleep-duration-and-overweight/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="כל דקה נחשבת – עושים פעילות 'על הדרך'" data-tags="" data-site="אפשריבריא" data-isnew="0" data-link="https://efsharibari.health.gov.il/active-life/exercising/every-minute-counts/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="http://efsharibari.health.gov.il/media/1221/dsc_8226spo.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #2a7d45, #1a5c2a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2a7d4515;color:#2a7d45;border-color:#2a7d4530">אפשריבריא</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://efsharibari.health.gov.il/active-life/exercising/every-minute-counts/" target="_blank" class="card-title-link">כל דקה נחשבת – עושים פעילות 'על הדרך'</a></h2>
+    <p class="card-desc">&quot;אפשריבריא&quot; לבצע פעילות גופנית בכל זמן ביום, בעל מזג אוויר או עונה, גיל ואפילו &quot;על הדרך&quot;. מידע והמלצות להנאה מהיתרונות הבריאותיים של פעילות גופנית.</p>
+    <a href="https://efsharibari.health.gov.il/active-life/exercising/every-minute-counts/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="למה השכן שלי הצליח יום אחד להיגמל מסיגריות ולי זה כל כך קשה?" data-tags="בריאות נפש" data-site="אפשריבריא" data-isnew="0" data-link="https://efsharibari.health.gov.il/well-being/smoking-prevention/smoking-cessation-challenges/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="http://efsharibari.health.gov.il/media/2439/smoking-cessation-challenges.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #2a7d45, #1a5c2a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2a7d4515;color:#2a7d45;border-color:#2a7d4530">אפשריבריא</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://efsharibari.health.gov.il/well-being/smoking-prevention/smoking-cessation-challenges/" target="_blank" class="card-title-link">למה השכן שלי הצליח יום אחד להיגמל מסיגריות ולי זה כל כך קשה?</a></h2>
+    <p class="card-desc">רוב המעשנים מנסים להפסיק לעשן בכוחות עצמם ללא עזרה אבל רובם לא מצליחים להפסיק לעשן לצמיתות. כדאי לדעת על המורכבות של ההתמכרות וגם על האפשרויות.</p>
+    <a href="https://efsharibari.health.gov.il/well-being/smoking-prevention/smoking-cessation-challenges/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="משרד הבריאות גאה להציג: המוקד הטלפוני הלאומי לגמילה מעישון" data-tags="" data-site="אפשריבריא" data-isnew="0" data-link="https://efsharibari.health.gov.il/well-being/smoking-prevention/call-center/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="http://efsharibari.health.gov.il/media/2434/call-center.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #2a7d45, #1a5c2a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2a7d4515;color:#2a7d45;border-color:#2a7d4530">אפשריבריא</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://efsharibari.health.gov.il/well-being/smoking-prevention/call-center/" target="_blank" class="card-title-link">משרד הבריאות גאה להציג: המוקד הטלפוני הלאומי לגמילה מעישון</a></h2>
+    <p class="card-desc">לייעוץ טלפוני אישי ומקצועי לגמילה מעישון חייגו 6800*</p>
+    <a href="https://efsharibari.health.gov.il/well-being/smoking-prevention/call-center/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+<article class="news-card" data-title="שואפים לסביבה נקייה מעישון" data-tags="" data-site="אפשריבריא" data-isnew="0" data-link="https://efsharibari.health.gov.il/well-being/smoking-prevention/clear-environment/" style="animation-delay:0.50s">
+  <div class="card-thumb"><img src="http://efsharibari.health.gov.il/media/1244/no-smoking-1639349_1920.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg, #2a7d45, #1a5c2a)';this.remove()"></div>
+  <div class="card-body">
+    <div class="card-meta-row">
+      <span class="site-tag" style="background:#2a7d4515;color:#2a7d45;border-color:#2a7d4530">אפשריבריא</span>
+      
+      <button class="bookmark-btn" onclick="toggleBookmark(this,event)" title="שמור לקריאה מאוחר יותר">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    </div>
+    <h2 class="card-headline"><a href="https://efsharibari.health.gov.il/well-being/smoking-prevention/clear-environment/" target="_blank" class="card-title-link">שואפים לסביבה נקייה מעישון</a></h2>
+    <p class="card-desc">מרחב ציבורי נקי מעשן סיגריות זה &quot;אפשריבריא&quot;. כל מה שחשוב לדעת על התקנות להגבלת עישון שנכנסו לתוקף בחודש ספטמבר, 2018.</p>
+    <a href="https://efsharibari.health.gov.il/well-being/smoking-prevention/clear-environment/" target="_blank" class="btn-read-more">קרא עוד <span aria-hidden="true">←</span></a>
+  </div>
+</article>
+
+  </div>
+  <div class="no-results" id="no-results">לא נמצאו תוצאות לחיפוש זה</div>
+  <p class="page-footer">נגרד אוטומטית מאתרי משרד הבריאות &middot; 21.03.2026  20:29</p>
+</main>
+
+<script>
+  const DATA = {"משרד הבריאות - פורטל ראשי": {"status": "ok", "url": "https://www.gov.il/he/departments/ministry_of_health/govil-landing-page", "error": "", "items": [{"title": "מרכז המידע של משרד הבריאות לזמן מלחמה", "link": "https://www.gov.il/he/pages/sheagathaari", "description": "", "date": "", "is_new": false}, {"title": "ביטול הצורך  בהרתחת מים ביישובים ובאתרים בית קשת, בניין מועצה אזורית גליל תחתון, אזור תעשייה כדורי, כפר קיש (שכונת הרחבה), דבורייה, שיבלי-אום אל-גאנם וכפר תבור", "link": "https://www.gov.il/he/pages/19032026-03", "description": "משרד הבריאות מעדכן על ביטול הצורך  בהרתחת מים ביישובים ובאתרים בית קשת, בניין מועצה אזורית גליל תחתון, אזור תעשייה כדורי, כפר קיש (שכונת הרחבה), דבורייה, שיבלי-אום אל-גאנם וכפר תבור", "date": "2026-03-19", "full_text": "בעקבות ביצוע פעולות מתקנות במערכת אספקת המים ובהתאם לתוצאות דיגום מים תקינות שהתקבלו במערכת האספקה, מודיע משרד הבריאות על ביטול הצורך בהרתחת מים במספר ישובים ואתרים.", "image_url": "https://www.gov.il/BlobFolder/office/ministry_of_health/he/ministry_of_health.png", "is_new": false}, {"title": "מוכנות מערכת הבריאות - מבצע “שאגת הארי”", "link": "https://www.gov.il/he/pages/20032026-01", "description": "משרד הבריאות מעדכן כי מתחילת מבצע שאגת הארי, נכון ליום שישי ה-20 במרץ 2026 בשעה 07:00 בבוקר פונו לבתי החולים 4,099 אנשים, מתוכם מאושפזים כעת 80 אנשים.", "date": "2026-03-20", "full_text": "משרד הבריאות מעדכן כי מתחילת מבצע שאגת הארי, נכון ליום שישי ה-20 במרץ 2026 בשעה 07:00 בבוקר פונו לבתי החולים 4,099 אנשים, מתוכם מאושפזים כעת 80 אנשים. מתוכם:", "image_url": "https://www.gov.il/BlobFolder/office/ministry_of_health/he/ministry_of_health.png", "is_new": false}, {"title": "משרד הבריאות מקדם חיסוני תלמידים שיתבצעו במתחם תת קרקעי ממוגן באסותא רמת החייל", "link": "https://www.gov.il/he/pages/19032026-01", "description": "בצל המלחמה, לראשונה: משרד הבריאות מקדם חיסוני תלמידים שיתבצעו במתחם תת קרקעי ממוגן באסותא רמת החייל", "date": "2026-03-19", "full_text": "בצל המצב הביטחוני ובהתאם להנחיות משרד הבריאות ופיקוד העורף, נפתח מוקד ייעודי של משרד הבריאות להשלמת חיסונים לתלמידים במתחם תת קרקעי ממוגן באסותא רמת החייל, בשיתוף חברת פמי. מדובר במהלך ראשון מסוגו, שמטרתו להבטיח רציפות שירותי בריאות חיוניים לתלמידים גם בתקופת חירום.", "image_url": "https://www.gov.il/BlobFolder/office/ministry_of_health/he/ministry_of_health.png", "is_new": false}, {"title": "עולם הדאטה של משרד הבריאות", "link": "https://datadashboard.health.gov.il/portal/dashboard/health", "description": "דשבורד הבריאות של משרד הבריאות הינו פורטל חדשני במגזר הציבורי ובכלל, להחצנה והנגשת נתונים לציבור הרחב. מטרת הדשבורד להעמיק את הידע על תחומי האחריות של משרד הבריאות, לעודד מחקר, דיון, גיבוש תובנות ופעולות מבוססות נתונים. משרד הבריאות רואה חשיבות רבה בהשבחת נכסי המידע והצגתם לציבור בצורה פשוטה ונוחה, ", "date": "", "is_new": false}, {"title": "אתר הוֹרוּת והורים", "link": "https://me.health.gov.il/parenting/", "description": "מתכנון ההורות ועד גידול ילדים – אתר משרד הבריאות להורים מציע כלים ומידע אמין ועדכני על פריון, הריון, לידה והתפתחות ילדים.", "date": "", "full_text": "חומרי ניקוי וכביסה ואפילו תרופות עלולים לגרום להרעלה - כך תמנעו ותפעלו אם עולה חשש להרעלה", "image_url": "https://me.health.gov.il/media/aqzpy23e/dscf9937-s-1.jpg", "is_new": false}, {"title": "אתר בנפש בריאה", "link": "https://me.health.gov.il/mental-health/", "description": "מידע על זכויות והטבות, שירותים בקהילה, אפשרויות טיפול, סל שיקום ואשפוז – הכל מרוכז במקום אחד, אתר המידע של משרד הבריאות לבריאות הנפש.", "date": "", "full_text": "כל ילד וילדה מגיבים אחרת למצבי לחץ. למדו לזהות סימני מצוקה ואיך לספק לילדיכם את הביטחון שהם זקוקים לו", "image_url": "https://me.health.gov.il/media/x3qbibdz/dscf2598_flip.jpg", "is_new": false}, {"title": "אתר הגיל השלישי", "link": "https://me.health.gov.il/older-adult/", "description": "כל המידע על זכויות והטבות, אשפוז בגיל המבוגר, חיסונים בגיל השלישי, תזונה בריאה, פעילות גופנית ועוד – הכל במקום אחד, אתר המידע של משרד הבריאות לבני הגיל השלישי.", "date": "", "full_text": "לצד הנחיות פיקוד העורף: מידע חיוני ופרקטי בנושא היערכות למצבי חירום שונים בגיל השלישי", "image_url": "https://me.health.gov.il/media/34hfpcue/vaccinations.jpg", "is_new": false}, {"title": "אתר אפשריבריא", "link": "https://efsharibari.health.gov.il/", "description": "", "date": "", "full_text": "בתקופה זו רבים מאיתנו חווים שינה לא סדירה וקושי בהירדמות. כדי לסייע לכם לשפר את איכות השינה ולצבור יותר שעות מנוחה, ריכזנו מספר טיפים פשוטים אך יעילים.", "image_url": "http://efsharibari.health.gov.il/media/1760/logo-efsharibari-256-256.png", "is_new": false}, {"title": "אתר מנהל האֲחָיוּת", "link": "https://www1.health.gov.il/nursing/", "description": "", "date": "", "is_new": false}, {"title": "שר הבריאות", "link": "https://www.gov.il/he/pages/minister-of-health", "description": "", "date": "", "is_new": false}, {"title": "מנכ\"ל משרד הבריאות", "link": "https://www.gov.il/he/pages/ministry-director-general", "description": "", "date": "", "is_new": false}], "last_scraped": "2026-03-21T19:56:24.874065", "icon": "🏛️", "color": "#005baa"}, "פורטל הורים": {"status": "ok", "url": "https://me.health.gov.il/parenting/", "items": [{"title": "תוכנית החיסונים", "link": "https://me.health.gov.il/parenting/raising-children/immunization-schedule/babies-immunization-schedule/", "description": "משרד הבריאות ממליץ על מתן חיסונים לילדים מגיל הלידה ועד בית הספר. היכנסו וקבלו מידע על אילו חיסונים מקבלים בטיפת חלב ואילו בבתי הספר? ונגד אילו מחלות חשוב לחסן?", "date": "", "full_text": "אחת הדרכים להגן על התינוק או התינוקת שהבאנו לעולם היא באמצעות מתן חיסוני שגרה שיגנו עליהם מפני מחלות קשות וסבל רב. איזה חיסונים נכללים בחיסוני השגרה, האם כדאי לפצל חיסונים, איך מתמודדים עם תופעות לוואי אפשריות אחרי חיסון, ומהם החיסונים הניתנים בבית הספר? כל המידע כאן", "image_url": "https://me.health.gov.il/media/aqzpy23e/dscf9937-s-1.jpg", "is_new": false}, {"title": "שאלון חצבת", "link": "https://me.health.gov.il/measles-vaccine-check/", "description": "האם עליכם להתחסן נגד חצבת? ענו על שאלון קצר וקבלו תשובה מיידית. בדיקת צורך בחיסון לפי גיל ומצב חיסוני, למי שלא נחשף לחולה. היכנסו לבדיקה מהירה", "date": "", "image_url": "https://me.health.gov.il/media/mfjnezc4/virus.png", "is_new": false}, {"title": "מידע לפי גיל", "link": "https://me.health.gov.il/parenting/age-menu/0-6-weeks/grow-0-6-weeks/", "description": "לתינוקות יש קצב התפתחות אישי, ועדיין יש שלבים צפויים בהתפתחותם. אלה אבני הדרך הצפויות מגיל לידה עד גיל 6 שבועות, והדרכים שיכולות לקדם את התינוק או התינוקת.", "date": "", "full_text": "מה צפוי לקרות בביקורים בטיפת חלב, אילו חיסונים ניתנים בכל גיל, מהן אבני הדרך ההתפתחותיות ואיך שומרים על תזונה בריאה וסביבה בטוחה בבית ובחוץ? כדי לעזור להורים העייפים והעסוקים, ריכזנו כאן את תמצית המידע החיוני לגידול ילדות וילדים בריאים ומאושרים, מלידה ועד גיל שש. המדריך מסודר לפי שלבי התפתחות וטווחי גיל, כך שאפשר בקלות לבחור ולקרוא רק את המידע הרלוונטי לשלב בו הילדה או הילד שלך נמצאים", "image_url": "https://me.health.gov.il/media/aqzpy23e/dscf9937-s-1.jpg", "is_new": false}, {"title": "טיפת חלב", "link": "https://me.health.gov.il/parenting/raising-children/infant-and-child-development/tipat-halav/tipat-halav-schedule/", "description": "מה עושים בטיפת חלב? מעקב גדילה והתפתחות התינוק, חיסוני השגרה, בדיקות רפואיות והדרכות בנושא האכלה, שינה, שפה, בטיחות, משחק, ויטמין D ותוסף ברזל", "date": "", "full_text": "תוך כדי הטיפול בתינוק או בתינוקת עולות שאלות שונות הקשורות לגדילה ולהתפתחות שלהם. אפשר לגשת לייעוץ והדרכת הורים בטיפת חלב, לצד ביצוע מעקבי גדילה וקבלת חיסוני השגרה בהתאם לגיל. כאן תקראו את כל מה שחשוב לדעת על התפתחות בריאה של פגים, תינוקות וילדים", "image_url": "https://me.health.gov.il/media/aqzpy23e/dscf9937-s-1.jpg", "is_new": false}, {"title": "מחשבון גדילה", "link": "https://me.health.gov.il/growth-calculator/", "description": "לקבלת עקומת גדילה אישית, הכניסו את נתוני המשקל והגובה של הילדים", "date": "", "is_new": false}, {"title": "מחשבון עלייה במשקל בהריון", "link": "https://me.health.gov.il/pregnant-calculator/", "description": "במהלך ההריון את צריכה לעלות במשקל. קצב העלייה והרגלי האכילה בזמן ההריון יכולים להשפיע על התינוק או התינוקת. הכניסי ערכים למחשבון ותקבלי עקומת משקל מותאמת אישית.", "date": "", "image_url": "https://me.health.gov.il/media/u3hjhls4/pregnancy-social.jpg", "is_new": false}, {"title": "תזונת תינוקות", "link": "https://me.health.gov.il/parenting/raising-children/baby-nutrition/nursing/breastfeeding-benefits/", "description": "הנקה היא המשך טבעי להריון וללידה והיא מועילה לאם ולתינוק. חלב אם מכיל את רכיבי התזונה המתאימים ביותר לתינוק או לתינוקת ומחזק את מערכת החיסון", "date": "", "full_text": "מהן הדרכים המומלצות להזנת תינוקות, האם אפשר להגביר ייצור חלב אם, מתי כדאי להיעזר ביועצת הנקה, איך שואבים ומאחסנים חלב אם, מה חשוב לדעת כשקונים תרכובת מזון לתינוקות, מהם עקרונות ההאכלה הקשובה מבקבוק ומאיזה גיל מתחילים טעימות ממזון מוצק? כל המידע מרוכז כאן.", "image_url": "https://me.health.gov.il/media/aqzpy23e/dscf9937-s-1.jpg", "is_new": false}, {"title": "מחשבון צריכת קלוריות", "link": "https://me.health.gov.il/dri-calculator/", "description": "כמה קלוריות נדרשות לכם ביום? הזינו כמה נתונים למחשבון ותקבלו המלצה מדויקת, למען תזונה בריאה ושמירה על משקל תקין", "date": "", "image_url": "https://me.health.gov.il/media/kc0ncumd/dri-social.jpg", "is_new": false}, {"title": "מחשבון פעילות גופנית", "link": "https://me.health.gov.il/met-calculator/", "description": "מחשבון לחישוב שריפת קלוריות לפי סוג פעילות, משך הזמן והמשקל שלכם. הזינו נתונים וקבלו הערכה מדויקת.", "date": "", "image_url": "https://me.health.gov.il/media/zddh0ilj/met-social.jpg", "is_new": false}], "last_scraped": "2026-03-21T19:56:33.729716", "icon": "👶", "color": "#2e7d32"}, "בריאות הנפש": {"status": "ok", "url": "https://me.health.gov.il/mental-health/", "items": [{"title": "לקבל טיפול נפשי", "link": "https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/community-treatment/treatment-services/", "description": "במסגרת השירות הציבורי בבריאות הנפש תוכלו להיעזר במגוון שירותים, שכוללים טיפולים מסוגים שונים דרך קופות החולים, ביקור בחדר מיון פסיכיאטרי ועד לאשפוז פסיכיאטרי בבתי חולים.", "date": "", "full_text": "במערכת הבריאות בישראל קיימות מסגרות טיפול מגוונות בתחום בריאות הנפש - מטיפול בקהילה במרפאות ומרכזי חוסן, דרך מסגרות ייעודיות כמו טיפול יום ובתים מאזנים, ועד אשפוז במחלקות פתוחות וסגורות. כאן תמצאו מידע על כל אחת מהמסגרות, למי הן מיועדות וכיצד לפנות אליהן", "image_url": "https://me.health.gov.il/media/x3qbibdz/dscf2598_flip.jpg", "is_new": false}, {"title": "טיפול בהתמכרויות", "link": "https://me.health.gov.il/mental-health/information-and-updates/addictions/about/", "description": "מהי התמכרות, איך היא מתפתחת, אילו גורמים עלולים להוביל אליה ומה ההשפעות האפשריות על הגוף, הנפש ואורח החיים? כל התשובות - בפנים", "date": "", "full_text": "אילו סימנים עלולים להעיד על התפתחות של התמכרות, ואיך היא משפיעה על חיי האדם והסביבה. מידע על סוגי התמכרות שונים – מאלכוהול, הימורים ומסכים ועד שימוש מזיק בסמים – ועל דרכי השיקום לאחר גמילה. כלים והדרכה לבני משפחה וחברים: איך לתמוך באדם מכור, לשמור על עצמכם ולעודד פנייה לטיפול.", "image_url": "https://me.health.gov.il/media/x3qbibdz/dscf2598_flip.jpg", "is_new": false}, {"title": "אשפוז פסיכיאטרי", "link": "https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/psychiatric-hospitalization/psychiatric-wards/", "description": "ההחלטה על אשפוז פסיכיאטרי נקבעת בשיתוף פעולה עם המטופל או המטופלת והצוות הרפואי, תוך התייחסות למצב הנפשי, לצרכים האישיים ולמטרות הטיפול. על ההבדלים מחלקה פתוחה לסגורה.", "date": "", "full_text": "במערכת הבריאות בישראל קיימות מסגרות טיפול מגוונות בתחום בריאות הנפש - מטיפול בקהילה במרפאות ומרכזי חוסן, דרך מסגרות ייעודיות כמו טיפול יום ובתים מאזנים, ועד אשפוז במחלקות פתוחות וסגורות. כאן תמצאו מידע על כל אחת מהמסגרות, למי הן מיועדות וכיצד לפנות אליהן", "image_url": "https://me.health.gov.il/media/x3qbibdz/dscf2598_flip.jpg", "is_new": false}, {"title": "מניעת אובדנות", "link": "https://me.health.gov.il/mental-health/information-and-updates/prevention-of-suicide/early-detection/", "description": "המיתוס שאומר ש\"מי שרוצה להתאבד בסוף יתאבד\" הוא שגוי לחלוטין! אילו אמצעי התערבות רגשיים, התנהגותיים, תרופתיים וסביבתיים, נמצאו יעילים למניעת אובדנות? כל הפרטים לפניכם", "date": "", "full_text": "אובדנות היא לא גזירת גורל. על ידי זיהוי סימנים מוקדמים, הקשבה אמפתית ופנייה לעזרה מקצועית, אפשר להציל חיים. מי נמצא בקבוצת הסיכון? מהן הדרכים למניעת אובדנות? ואיך ניתן לסייע לבני משפחה שחוו את הנורא מכל? כל המידע כאן", "image_url": "https://me.health.gov.il/media/x3qbibdz/dscf2598_flip.jpg", "is_new": false}, {"title": "מרכזי חוסן", "link": "https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/community-treatment/resilience-center/", "description": "מה תפקידם של מרכזי החוסן, היכן הם ממוקמים ומי יכול להיעזר בהם? כל המידע על מרכזי חוסן בישראל, שמספקים סיוע רגשי במצבי משבר ובזמן חירום ותורמים לחזרה מהירה יותר לתפקוד", "date": "", "full_text": "במערכת הבריאות בישראל קיימות מסגרות טיפול מגוונות בתחום בריאות הנפש - מטיפול בקהילה במרפאות ומרכזי חוסן, דרך מסגרות ייעודיות כמו טיפול יום ובתים מאזנים, ועד אשפוז במחלקות פתוחות וסגורות. כאן תמצאו מידע על כל אחת מהמסגרות, למי הן מיועדות וכיצד לפנות אליהן", "image_url": "https://me.health.gov.il/media/x3qbibdz/dscf2598_flip.jpg", "is_new": false}, {"title": "סל שיקום", "link": "https://me.health.gov.il/mental-health/therapy-rehabilitation/rehabilitation/rehabilitation-basket/about/", "description": "כל מה שצריך לדעת על סל שיקום - סל שכולל שירותים מותאמים אישית, ושנועד לסייע למתמודדי ומתמודדות נפש להתקדם ולהשתלב בקהילה באופן מיטבי.", "date": "", "full_text": "שילוב בתעסוקה, דיור מוגן והוסטלים, סיוע בהשכלה, פעילויות פנאי וחברה וליווי אישי - אלה חלק משירותי השיקום בקהילה המיועדים לסייע למתמודדי ומתמודדות נפש לחיות חיים עצמאיים ומספקים. כל מה שצריך לדעת על סל השיקום, הגשת הבקשה והאפשרויות להשתלבות בקהילה", "image_url": "https://me.health.gov.il/media/x3qbibdz/dscf2598_flip.jpg", "is_new": false}], "last_scraped": "2026-03-21T19:56:39.188834", "icon": "🧠", "color": "#6a1b9a"}, "הגיל השלישי": {"status": "ok", "url": "https://me.health.gov.il/older-adult/", "items": [{"title": "מחשבון קוד סיעודי", "link": "https://me.health.gov.il/nursing-calculator/", "description": "המחשבון נועד להעריך את העלות הצפויה של ההשתתפות העצמית באשפוז סיעודי, על בסיס נתוני ההכנסות של המטופל ושל בני משפחתו. התוצאה שתתקבל היא הערכה ראשונית בלבד, שנועדה לספק תמונת מצב כללית לקראת התהליך.", "date": "", "image_url": "https://me.health.gov.il/media/hisn00ch/dscf8301-1.jpg", "is_new": false}, {"title": "שלבקת חוגרת", "link": "https://me.health.gov.il/older-adult/services-rights/vaccines/recommended-vaccines/shingles-vaccine/", "description": "החיסון נגד שלבקת חוגרת שנגרמת על ידי נגיף וריצלה יכול למנוע את הופעת המחלה או את חומרת התסמינים שלה, בעיקר כאבים קשים שיכולים להימשך חודשים ושלפוחיות מגרדות.", "date": "", "full_text": "עם החלשות המערכת החיסונית, הסיכון לחלות במחלות שונות ולסיבוכים כתוצאה מהן עולה בגילאי 65+. לשמחתנו, קיים היום מגוון רחב של חיסונים שניתנים בקופות החולים ללא עלות, ויכולים להקל ולהגן מפני מחלות קשות.", "image_url": "https://me.health.gov.il/media/34hfpcue/vaccinations.jpg", "is_new": false}, {"title": "הנחיות רפואיות מקדימות", "link": "https://me.health.gov.il/older-adult/services-rights/before-saying-goodbye/advance-medical-directives/", "description": "החוק מאפשר להכין הנחיות רפואיות מקדימות או למנות מיופה כוח למקרה שרופא אחראי הגדיר שנותרו לחולה עד 6 חודשים לחיות, והחולה אינו כשיר להורות על החלטות הקשורות למצבו. ההנחיות מחייבות את הצוות הרפואי", "date": "", "full_text": "היערכות למצבים רפואיים מורכבים וקבלת החלטות מראש עשויה לסייע בקבלת החלטות בזמן אמת. כאן תוכלו לקבל מידע על ההבדלים בין אפשרויות המינוי השונות ולהכיר טיפולים שעשויים להקל במצבים סופניים.", "image_url": "https://me.health.gov.il/media/34hfpcue/vaccinations.jpg", "is_new": false}, {"title": "מחשבון צריכת קלוריות", "link": "https://me.health.gov.il/dri-calculator/", "description": "כמה קלוריות נדרשות לכם ביום? הזינו כמה נתונים למחשבון ותקבלו המלצה מדויקת, למען תזונה בריאה ושמירה על משקל תקין", "date": "", "image_url": "https://me.health.gov.il/media/kc0ncumd/dri-social.jpg", "is_new": false}, {"title": "מחשבון פעילות גופנית", "link": "https://me.health.gov.il/met-calculator/", "description": "מחשבון לחישוב שריפת קלוריות לפי סוג פעילות, משך הזמן והמשקל שלכם. הזינו נתונים וקבלו הערכה מדויקת.", "date": "", "image_url": "https://me.health.gov.il/media/zddh0ilj/met-social.jpg", "is_new": false}, {"title": "מחשבון למדידת מסת גוף", "link": "https://me.health.gov.il/bmi-calculator/", "description": "מחשבון BMI הוא נוסחה שמשתמשת בנתוני הגובה והמשקל שלך לצורך הערכת מסת גופך. הזינו את הנתונים במחשבון והתוצאה תסייע לזהות באיזו קטגורית מדד מסת גוף אתם נמצאים", "date": "", "image_url": "https://me.health.gov.il/media/pgpl2cuw/bmi-social.jpg", "is_new": false}], "last_scraped": "2026-03-21T19:56:42.959433", "icon": "👴", "color": "#e65100"}, "אפשריבריא": {"status": "ok", "url": "https://efsharibari.health.gov.il/", "error": "", "items": [{"title": "איך לשמור על הפסקת עישון במצבי לחץ ומשבר", "link": "https://efsharibari.health.gov.il/well-being/smoking-prevention/stay-smoke-free/", "description": "חוששים לחזור לעשן? יש דרכים להימנע מעישון ולהתמודד עם המצב", "date": "", "full_text": "הימים הם ימי מלחמה במדינתנו, והם מעוררים אצל כולנו מחשבות, רגשות ודאגות – בצורות ובעוצמות שונות. עבור אנשים המתמודדים עם התמכרות לעישון, מתנהל בתקופה זו קרב נוסף: מי שנגמל מעישון עלול למצוא את עצמו חוזר לעשן.", "image_url": "http://efsharibari.health.gov.il/media/2991/smoke-refuse.png", "is_new": false}, {"title": "טיפים לשינה בזמן חירום", "link": "https://efsharibari.health.gov.il/well-being/unstressed-and-healthy/sleeping-during-emergency/", "description": "בתקופה זו רבים מאיתנו חווים שינה לא סדירה וקושי בהירדמות. כדי לסייע לכם לשפר את איכות השינה ולצבור יותר שעות מנוחה, ריכזנו מספר טיפים פשוטים אך יעילים.", "date": "", "is_new": false}, {"title": "שגרת חירום עם ילדים", "link": "https://efsharibari.health.gov.il/well-being/unstressed-and-healthy/children-coping/", "description": "איך מייצרים שגרה בחירום בבית? איך מחזקים את החוסן בקרב ילדים? מה אפשר לעשות ומה כדאי שלא? אפשריבריא בכל מצב.", "date": "", "is_new": false}, {"title": "יוצאים מהלחץ: על לחץ בעבודה והתמודדות עמו", "link": "https://efsharibari.health.gov.il/initiatives-and-projects/at-work-2/stress-free-at-work/", "description": "לחץ בעבודה הוא מאפיין שכיח של חיי העבודה בעולם המודרני. מהו לחץ ומה ניתן לעשות כדי למנוע אותו ולהפחית את השלכותיו השליליות?", "date": "", "image_url": "http://efsharibari.health.gov.il/media/2588/stress-at-work.jpg", "is_new": false}, {"title": "סוכר הוא הגורם העיקרי לעששת השיניים ולסבל מיותר", "link": "https://efsharibari.health.gov.il/eat-healthy/healthy-nutrition/beverages/sugars-and-dental-caries/", "description": "כיצד סוכר במזון ובמשקאות פוגע בשיניים? בישראל למחצית מהילדים בגיל הגן יש עששת. שומרים על היגיינת פה ושותים מים - לחיוך אפשריבריא", "date": "", "image_url": "http://efsharibari.health.gov.il/media/2510/sugars-and-dental-caries.png", "is_new": false}, {"title": "על שעות שינה והשמנה", "link": "https://efsharibari.health.gov.il/well-being/unstressed-and-healthy/sleep-duration-and-overweight/", "description": "לישון זה \"אפשריבריא\". ויתור על שעות שינה, הן אצל ילדים והן אצל מבוגרים, גובה מחיר בריאותי כבד, תרתי משמע - הסיכוי להשמנת יתר גובר כשמותרים על שעות השינה.", "date": "", "full_text": "קצב החיים המהיר, היעדר הפרדה בין שעות עבודה לבין שעות משפחה ופנאי, טלוויזיה, אינטרנט וטלפונים \"חכמים\" – כל אלה הופכים את שעות השינה למצרך יקר – שאצל לא מעט מאתנו נמצא במחסור תמידי. למחסור הזה יש השפעות מדאיגות על הבריאות שלנו – ועל האפשרות שלנו להיות במצב של עודף משקל והשמנת יתר.", "image_url": "http://efsharibari.health.gov.il/media/1239/12101.jpg", "is_new": false}, {"title": "כל דקה נחשבת – עושים פעילות 'על הדרך'", "link": "https://efsharibari.health.gov.il/active-life/exercising/every-minute-counts/", "description": "\"אפשריבריא\" לבצע פעילות גופנית בכל זמן ביום, בעל מזג אוויר או עונה, גיל ואפילו \"על הדרך\". מידע והמלצות להנאה מהיתרונות הבריאותיים של פעילות גופנית.", "date": "", "full_text": "בכל גיל, בכל עונה, ובכל זמן: ריכזנו עבורכם את כל המידע וההמלצות שיאפשרו לכם להיות בתנועה וליהנות מהיתרונות הבריאותיים הרבים של הפעילות הגופנית", "image_url": "http://efsharibari.health.gov.il/media/1221/dsc_8226spo.jpg", "is_new": false}, {"title": "למה השכן שלי הצליח יום אחד להיגמל מסיגריות ולי זה כל כך קשה?", "link": "https://efsharibari.health.gov.il/well-being/smoking-prevention/smoking-cessation-challenges/", "description": "רוב המעשנים מנסים להפסיק לעשן בכוחות עצמם ללא עזרה אבל רובם לא מצליחים להפסיק לעשן לצמיתות. כדאי לדעת על המורכבות של ההתמכרות וגם על האפשרויות.", "date": "", "image_url": "http://efsharibari.health.gov.il/media/2439/smoking-cessation-challenges.jpg", "is_new": false}, {"title": "משרד הבריאות גאה להציג: המוקד הטלפוני הלאומי לגמילה מעישון", "link": "https://efsharibari.health.gov.il/well-being/smoking-prevention/call-center/", "description": "לייעוץ טלפוני אישי ומקצועי לגמילה מעישון חייגו 6800*", "date": "", "full_text": "המוקד הלאומי לגמילה מעישון של משרד הבריאות 6800* מציע תכנית חדשה וייחודית לליווי מעשנים ומעשנות לאורך כל תהליך הגמילה מעישון, משלב ההכנה להפסקת עישון ועד לפיתוח מיומנויות לשימור הפסקת העישון לאורך זמן. התכנית הינה בליווי אישי של יועצי גמילה מוסמכים, מובילים בארץ בתחום ומבוססת על מחקרים רפואיים ופסיכולוגיים עדכניים.", "image_url": "http://efsharibari.health.gov.il/media/2434/call-center.jpg", "is_new": false}, {"title": "שואפים לסביבה נקייה מעישון", "link": "https://efsharibari.health.gov.il/well-being/smoking-prevention/clear-environment/", "description": "מרחב ציבורי נקי מעשן סיגריות זה \"אפשריבריא\". כל מה שחשוב לדעת על התקנות להגבלת עישון שנכנסו לתוקף בחודש ספטמבר, 2018.", "date": "", "full_text": "כל מה שצריך, כדאי, וחשוב לדעת על התקנות להגבלת עישון במרחב הציבורי שנכנסו לתוקף בספטמבר 2018", "image_url": "http://efsharibari.health.gov.il/media/1244/no-smoking-1639349_1920.jpg", "is_new": false}], "last_scraped": "2026-03-21T19:57:20.349375", "icon": "💪", "color": "#00838f"}};
+  let activeTag = '';
+  let activeSite = '';
+  let showBookmarksOnly = false;
+  let bookmarks = JSON.parse(localStorage.getItem('moh_bookmarks') || '[]');
+
+  // ── DARK MODE ──
+  (function() {
+    const saved = localStorage.getItem('moh_theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      updateDarkIcon(true);
+    }
+  })();
+
+  function updateDarkIcon(isDark) {
+    const icon = document.getElementById('dark-icon');
+    if (!icon) return;
+    if (isDark) {
+      icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    } else {
+      icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    }
+  }
+
+  function toggleDarkMode() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('moh_theme', 'light');
+      updateDarkIcon(false);
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('moh_theme', 'dark');
+      updateDarkIcon(true);
+    }
+  }
+
+  // ── SCROLL PROGRESS BAR ──
+  window.addEventListener('scroll', function() {
+    const el = document.getElementById('progress-bar');
+    if (!el) return;
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docH = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const pct = docH > 0 ? (scrollTop / docH) * 100 : 0;
+    el.style.width = pct + '%';
+  }, { passive: true });
+
+  // ── ANIMATED COUNTERS ──
+  function animateCounter(el) {
+    const target = parseInt(el.getAttribute('data-target') || '0', 10);
+    if (target === 0) { el.textContent = '0'; return; }
+    const duration = 900;
+    const start = performance.now();
+    function step(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target);
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(step);
+  }
+  window.addEventListener('load', function() {
+    document.querySelectorAll('[data-target]').forEach(animateCounter);
+
+    // After initial card animations complete, freeze them so filter works instantly
+    var maxDelay = 500 + 450 + 100; // max stagger + duration + buffer
+    setTimeout(function() {
+      document.querySelectorAll('.news-card').forEach(function(c) {
+        c.style.animation = 'none';
+        c.style.opacity = '1';
+        c.style.transform = 'none';
+      });
+    }, maxDelay);
+  });
+
+
+  // ── NEWS TICKER ──
+  (function() {
+    const track = document.getElementById('ticker-track');
+    if (!track) return;
+    let pos = 0;
+    const speed = 0.55;
+    function step() {
+      pos -= speed;
+      const halfW = track.scrollWidth / 2;
+      if (-pos >= halfW) pos = 0;
+      track.style.transform = 'translateX(' + pos + 'px)';
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  })();
+
+  // ── REFRESH COUNTDOWN (every 30 min) ──
+  (function() {
+    var INTERVAL_MIN = 30;
+    var el = document.getElementById('cd-val');
+    if (!el) return;
+    function nextMark() {
+      var now = new Date();
+      var m = now.getMinutes();
+      var rem = INTERVAL_MIN - (m % INTERVAL_MIN);
+      var next = new Date(now.getTime() + rem * 60000);
+      next.setSeconds(0, 0);
+      return next;
+    }
+    function update() {
+      var diff = Math.max(0, nextMark() - new Date());
+      var m = Math.floor(diff / 60000);
+      var s = Math.floor((diff % 60000) / 1000);
+      el.textContent = m + ':\u200F' + String(s).padStart(2,'0');
+      if (diff < 3000) setTimeout(function() { window.location.reload(); }, diff + 500);
+    }
+    update();
+    setInterval(update, 1000);
+  })();
+
+  // ── BOOKMARKS ──
+  function getCardKey(card) {
+    return card.dataset.link || card.dataset.title || '';
+  }
+  function isBookmarked(card) {
+    return bookmarks.includes(getCardKey(card));
+  }
+  function toggleBookmark(btn, event) {
+    if (event) event.stopPropagation();
+    const card = btn.closest('.news-card');
+    if (!card) return;
+    const key = getCardKey(card);
+    if (!key) return;
+    const idx = bookmarks.indexOf(key);
+    if (idx === -1) {
+      bookmarks.push(key);
+      btn.classList.add('bookmarked');
+      card.classList.add('bookmarked-card');
+    } else {
+      bookmarks.splice(idx, 1);
+      btn.classList.remove('bookmarked');
+      card.classList.remove('bookmarked-card');
+    }
+    localStorage.setItem('moh_bookmarks', JSON.stringify(bookmarks));
+    if (showBookmarksOnly) filterCards();
+  }
+
+  function toggleBookmarksFilter(btn) {
+    showBookmarksOnly = !showBookmarksOnly;
+    btn.classList.toggle('active-gold', showBookmarksOnly);
+    filterCards();
+  }
+
+  // Restore bookmarks on load
+  document.querySelectorAll('.news-card').forEach(function(card) {
+    if (isBookmarked(card)) {
+      card.classList.add('bookmarked-card');
+      const btn = card.querySelector('.bookmark-btn');
+      if (btn) btn.classList.add('bookmarked');
+    }
+  });
+
+  // ── SEARCH + FILTER ──
+  // Store original HTML for highlight restore
+  document.querySelectorAll('.news-card').forEach(function(card) {
+    const tEl = card.querySelector('.card-title-link');
+    const dEl = card.querySelector('.card-desc');
+    if (tEl) tEl.dataset.orig = tEl.innerHTML;
+    if (dEl) dEl.dataset.orig = dEl.innerHTML;
+  });
+
+  function highlightEl(el, q) {
+    if (!el || !el.dataset.orig) return;
+    if (!q) { el.innerHTML = el.dataset.orig; return; }
+    const esc = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    el.innerHTML = el.dataset.orig.replace(new RegExp('(' + esc + ')', 'gi'), '<mark class="hl">$1</mark>');
+  }
+
+  function filterCards() {
+    const q = document.getElementById('search').value.trim().toLowerCase();
+    let visible = 0;
+    document.querySelectorAll('.news-card').forEach(function(card) {
+      const title = (card.dataset.title || '').toLowerCase();
+      const tags  = (card.dataset.tags  || '').toLowerCase();
+      const site  = (card.dataset.site  || '').toLowerCase();
+
+      const matchQ    = !q || title.includes(q) || tags.includes(q) || site.includes(q);
+      const matchTag  = !activeTag || tags.includes(activeTag.toLowerCase());
+      const matchSite = !activeSite || site === activeSite.toLowerCase();
+      const matchBM   = !showBookmarksOnly || isBookmarked(card);
+
+      const show = matchQ && matchTag && matchSite && matchBM;
+      card.classList.toggle('hidden', !show);
+      if (show) {
+        visible++;
+        highlightEl(card.querySelector('.card-title-link'), q);
+        highlightEl(card.querySelector('.card-desc'), q);
+      }
+    });
+    document.getElementById('no-results').classList.toggle('visible', visible === 0);
+  }
+
+  function setTagFilter(tag, btn) {
+    activeTag = tag;
+    document.querySelectorAll('.filter-group .filter-pill').forEach(function(b) {
+      if (b.id !== 'site-all-btn' && !b.hasAttribute('data-site-btn') && b.id !== 'bookmarks-btn') {
+        b.classList.remove('active');
+      }
+    });
+    btn.classList.add('active');
+    filterCards();
+  }
+
+  function setSiteFilter(site, btn) {
+    activeSite = site;
+    document.querySelectorAll('[data-site-btn], #site-all-btn').forEach(function(b) {
+      b.classList.remove('active-teal');
+    });
+    btn.classList.add('active-teal');
+    filterCards();
+  }
+
+  // Mark site filter buttons
+  document.querySelectorAll('.filter-pill').forEach(function(btn) {
+    if (btn.getAttribute('onclick') && btn.getAttribute('onclick').startsWith('setSiteFilter')) {
+      btn.setAttribute('data-site-btn', '1');
+    }
+  });
+
+  // ── ACCESSIBILITY ──
+  var a11yPanelOpen = false;
+  var fontSizeLevel = 0; // -2 to +4
+  var fontSizes = ['12px','13px','15px','17px','19px','22px','26px'];
+  var fontLabels = ['קטן מאוד','קטן','רגיל','בינוני','גדול','גדול מאוד','ענק'];
+  // fontLabels: קטן מאוד, קטן, רגיל, בינוני, גדול, גדול מאוד, ענק
+  var baseFontIndex = 2; // 'רגיל' = index 2 = 15px
+
+  (function() {
+    // Restore saved a11y settings
+    var saved = JSON.parse(localStorage.getItem('moh_a11y') || '{}');
+    ['a11y-contrast','a11y-grayscale','a11y-readable','a11y-text-spacing',
+     'a11y-underline-links','a11y-highlight-focus','a11y-no-anim','a11y-big-cursor'].forEach(function(cls) {
+      if (saved[cls]) {
+        document.documentElement.classList.add(cls);
+        var btn = document.getElementById('btn-' + cls.replace('a11y-',''));
+        if (btn) btn.classList.add('on');
+      }
+    });
+    if (saved.fontSize !== undefined) {
+      fontSizeLevel = saved.fontSize;
+      applyFontSize();
+    }
+  })();
+
+  function toggleA11yPanel() {
+    a11yPanelOpen = !a11yPanelOpen;
+    document.getElementById('a11y-panel').classList.toggle('open', a11yPanelOpen);
+    document.getElementById('a11y-toggle').setAttribute('aria-expanded', a11yPanelOpen);
+    if (a11yPanelOpen) document.querySelector('.a11y-close').focus();
+  }
+
+  // Close panel on Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && a11yPanelOpen) toggleA11yPanel();
+    if ((e.key === '/' || e.key === 'F' && e.ctrlKey) && !a11yPanelOpen) {
+      e.preventDefault();
+      document.getElementById('search').focus();
+    }
+  });
+
+  function toggleA11y(cls, btn) {
+    var on = document.documentElement.classList.toggle(cls);
+    btn.classList.toggle('on', on);
+    saveA11y();
+  }
+
+  function applyFontSize() {
+    var idx = baseFontIndex + fontSizeLevel;
+    idx = Math.max(0, Math.min(fontSizes.length - 1, idx));
+    document.documentElement.style.fontSize = fontSizes[idx];
+    var lbl = document.getElementById('fs-label');
+    if (lbl) lbl.textContent = fontLabels[idx];
+  }
+
+  function changeFontSize(dir) {
+    fontSizeLevel += dir;
+    fontSizeLevel = Math.max(-2, Math.min(4, fontSizeLevel));
+    applyFontSize();
+    saveA11y();
+  }
+
+  function saveA11y() {
+    var state = { fontSize: fontSizeLevel };
+    ['a11y-contrast','a11y-grayscale','a11y-readable','a11y-text-spacing',
+     'a11y-underline-links','a11y-highlight-focus','a11y-no-anim','a11y-big-cursor'].forEach(function(cls) {
+      state[cls] = document.documentElement.classList.contains(cls);
+    });
+    localStorage.setItem('moh_a11y', JSON.stringify(state));
+  }
+
+  function resetA11y() {
+    ['a11y-contrast','a11y-grayscale','a11y-readable','a11y-text-spacing',
+     'a11y-underline-links','a11y-highlight-focus','a11y-no-anim','a11y-big-cursor'].forEach(function(cls) {
+      document.documentElement.classList.remove(cls);
+      var btn = document.getElementById('btn-' + cls.replace('a11y-',''));
+      if (btn) btn.classList.remove('on');
+    });
+    fontSizeLevel = 0;
+    applyFontSize();
+    localStorage.removeItem('moh_a11y');
+  }
+
+  // ── EMAIL ──
+  function sendEmail() {
+    let body = 'דשבורד משרד הבריאות — ' + new Date().toLocaleDateString('he-IL') + '\n\n';
+    for (const [site, info] of Object.entries(DATA)) {
+      body += '── ' + site + ' ──\n';
+      (info.items || []).forEach(function(i) {
+        body += (i.is_new ? '[חדש] ' : '') + i.title + '\n';
+        if (i.description) body += i.description + '\n';
+        if (i.link) body += i.link + '\n';
+        body += '\n';
+      });
+    }
+    const sub = encodeURIComponent('עדכון משרד הבריאות — ' + new Date().toLocaleDateString('he-IL'));
+    window.location.href = 'mailto:?subject=' + sub + '&body=' + encodeURIComponent(body);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:www.gov.il)",
+      "WebFetch(domain:me.health.gov.il)",
+      "Bash(source venv/Scripts/activate)",
+      "Bash(source venv/bin/activate)",
+      "Bash(python src/scraper.py)",
+      "Bash(venv/Scripts/pip install:*)",
+      "Bash(venv/Scripts/python src/scraper.py)",
+      "Bash(venv/Scripts/python -c \"import json; d=json.load\\(open\\(''scraped_data.json'',encoding=''utf-8''\\)\\); [print\\(i[''title''], ''|'', i[''link''][:60] if i[''link''] else ''NO LINK''\\) for i in d[''פורטל הורים''][''items'']]\")",
+      "Bash(venv/Scripts/python -c \"import json; d=json.load\\(open\\(''scraped_data.json'',encoding=''utf-8''\\)\\); [print\\(i[''title''], ''|'', i[''link''][:60] if i[''link''] else ''NO LINK''\\) for i in d[''בריאות הנפש''][''items'']]\")",
+      "WebFetch(domain:www.health.gov.il)",
+      "WebFetch(domain:publicmoh.health.gov.il)",
+      "Bash(venv/Scripts/python -m playwright install chromium)",
+      "Bash(venv/Scripts/python -c \"from playwright.sync_api import sync_playwright; print\\(''playwright ok''\\)\")",
+      "Bash(venv/Scripts/python -c \":*)",
+      "Bash(venv/Scripts/python -c \"import playwright_stealth; print\\(dir\\(playwright_stealth\\)\\)\")",
+      "Bash(venv/Scripts/python -c \"from playwright_stealth import Stealth; help\\(Stealth\\)\")",
+      "Bash(venv/Scripts/python -c \"from playwright_stealth import Stealth; help\\(Stealth.use_sync\\)\")",
+      "Bash(venv/Scripts/streamlit run:*)",
+      "Read(//c/Users/erezf/AppData/Local/Temp/claude/c--Users-erezf-moh-project/946a89c6-58d6-4960-b2ad-1fb92ec8225c/tasks/**)",
+      "Bash(venv/Scripts/python -m streamlit run app.py --server.port 8501)",
+      "Bash(venv/Scripts/python -m streamlit run app.py --server.headless true --server.port 8501)",
+      "Bash(echo \"exit: $?\")"
+    ]
+  }
+}
