@@ -44,6 +44,12 @@ SITES = {
         'icon': '💪',
         'color': '#00838f',
     },
+    'מנהל האחיות': {
+        'url': 'https://www1.health.gov.il/nursing/',
+        'type': 'me_health',
+        'icon': '🩺',
+        'color': '#1565c0',
+    },
 }
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
