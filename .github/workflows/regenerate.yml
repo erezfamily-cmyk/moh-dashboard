@@ -1,0 +1,34 @@
+name: Regenerate Dashboard
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scraped_data.json'
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Regenerate dashboard
+        run: python src/generate_dashboard.py
+
+      - name: Commit dashboard
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dashboard.html
+          git diff --staged --quiet || git commit -m "עדכון אוטומטי dashboard.html [skip ci]"
+          git push

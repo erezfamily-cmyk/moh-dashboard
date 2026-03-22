@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ממשק ניהול | דשבורד משרד הבריאות</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0d1b3e;
+      --navy-mid: #1a2d5a;
+      --navy-light: #243a6e;
+      --blue: #2563eb;
+      --blue-hover: #1d4ed8;
+      --blue-light: #dbeafe;
+      --green: #16a34a;
+      --green-light: #dcfce7;
+      --red: #dc2626;
+      --red-light: #fee2e2;
+      --yellow: #d97706;
+      --yellow-light: #fef3c7;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-400: #94a3b8;
+      --gray-500: #64748b;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --gray-900: #0f172a;
+      --sidebar-w: 280px;
+      --topbar-h: 60px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+      --shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05);
+      --radius: 10px;
+      --radius-sm: 6px;
+      --transition: .18s ease;
+    }
+
+    html, body { height: 100%; font-family: 'Segoe UI', Arial, sans-serif; background: var(--gray-50); color: var(--gray-800); }
+
+    /* ===== TOP BAR ===== */
+    #topbar {
+      position: fixed; top: 0; right: 0; left: 0; z-index: 100;
+      height: var(--topbar-h);
+      background: var(--navy);
+      display: flex; align-items: center; padding: 0 20px; gap: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.35);
+    }
+    #topbar .logo {
+      display: flex; align-items: center; gap: 10px; flex: 1;
+    }
+    #topbar .logo-icon {
+      width: 34px; height: 34px; background: var(--blue); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    #topbar .logo-icon svg { width: 18px; height: 18px; fill: #fff; }
+    #topbar h1 { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -.2px; }
+    #topbar .topbar-meta { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+    #topbar .topbar-actions { display: flex; align-items: center; gap: 10px; }
+    #unsaved-badge {
+      font-size: 11px; background: var(--yellow); color: #fff;
+      padding: 3px 9px; border-radius: 20px; font-weight: 600;
+      display: none;
+    }
+    #unsaved-badge.visible { display: inline-block; }
+    #last-saved { font-size: 11px; color: #94a3b8; white-space: nowrap; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px;
+           border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600;
+           cursor: pointer; transition: background var(--transition), transform var(--transition);
+           font-family: inherit; }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-primary:hover { background: var(--blue-hover); }
+    .btn-primary:disabled { background: var(--gray-400); cursor: not-allowed; transform: none; }
+    .btn-success { background: var(--green); color: #fff; }
+    .btn-success:hover { background: #15803d; }
+    .btn-danger { background: var(--red); color: #fff; }
+    .btn-danger:hover { background: #b91c1c; }
+    .btn-ghost { background: transparent; color: var(--gray-600); border: 1px solid var(--gray-300); }
+    .btn-ghost:hover { background: var(--gray-100); }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
+
+    /* ===== LAYOUT ===== */
+    #app { display: flex; min-height: 100vh; padding-top: var(--topbar-h); }
+
+    /* ===== SIDEBAR ===== */
+    #sidebar {
+      width: var(--sidebar-w); flex-shrink: 0; background: #fff;
+      border-left: 1px solid var(--gray-200);
+      display: flex; flex-direction: column;
+      position: fixed; top: var(--topbar-h); bottom: 0; right: 0;
+      overflow: hidden;
+    }
+    #sidebar-header {
+      padding: 14px 16px 10px; border-bottom: 1px solid var(--gray-200);
+      background: var(--gray-50);
+    }
+    #sidebar-header h2 { font-size: 12px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: .5px; }
+    #sidebar-search {
+      margin-top: 8px; position: relative;
+    }
+    #sidebar-search input {
+      width: 100%; padding: 7px 32px 7px 10px; border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm); font-size: 12px; font-family: inherit;
+      background: #fff; color: var(--gray-800); outline: none;
+      transition: border-color var(--transition);
+    }
+    #sidebar-search input:focus { border-color: var(--blue); }
+    #sidebar-search .search-icon {
+      position: absolute; right: 9px; top: 50%; transform: translateY(-50%);
+      width: 13px; height: 13px; fill: var(--gray-400); pointer-events: none;
+    }
+    #source-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+    .source-item {
+      display: flex; align-items: center; padding: 9px 16px; cursor: pointer;
+      border-radius: 0; transition: background var(--transition);
+      gap: 10px; position: relative;
+    }
+    .source-item:hover { background: var(--gray-50); }
+    .source-item.active { background: var(--blue-light); }
+    .source-item.active .source-name { color: var(--blue); font-weight: 700; }
+    .source-item.active::before {
+      content: ''; position: absolute; right: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--blue); border-radius: 2px 0 0 2px;
+    }
+    .source-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--blue-light);
+      border: 2px solid var(--blue); flex-shrink: 0;
+    }
+    .source-item.active .source-dot { background: var(--blue); }
+    .source-name { font-size: 13px; color: var(--gray-700); flex: 1; line-height: 1.3; }
+    .source-badge {
+      font-size: 10px; font-weight: 700; background: var(--gray-200); color: var(--gray-600);
+      padding: 2px 7px; border-radius: 20px; flex-shrink: 0;
+    }
+    .source-item.active .source-badge { background: var(--blue); color: #fff; }
+    #sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--gray-200); background: var(--gray-50); }
+
+    /* ===== MAIN ===== */
+    #main {
+      flex: 1; margin-right: var(--sidebar-w);
+      display: flex; flex-direction: column; min-height: calc(100vh - var(--topbar-h));
+    }
+    #main-header {
+      background: #fff; border-bottom: 1px solid var(--gray-200);
+      padding: 14px 24px; display: flex; align-items: center; gap: 14px;
+      position: sticky; top: var(--topbar-h); z-index: 50; flex-wrap: wrap;
+    }
+    #main-header .source-title { font-size: 18px; font-weight: 800; color: var(--navy); flex: 1; }
+    #main-header .source-url { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+    #cards-count { font-size: 12px; color: var(--gray-500); background: var(--gray-100); padding: 3px 10px; border-radius: 20px; }
+    #content-area { flex: 1; padding: 24px; }
+    #cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
+    }
+
+    /* ===== CARD ===== */
+    .card {
+      background: #fff; border-radius: var(--radius); border: 1px solid var(--gray-200);
+      overflow: hidden; display: flex; flex-direction: column;
+      transition: box-shadow var(--transition), transform var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .card-image {
+      width: 100%; height: 160px; object-fit: cover; display: block;
+      background: var(--gray-100);
+    }
+    .card-image-placeholder {
+      width: 100%; height: 160px; background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .card-image-placeholder svg { width: 40px; height: 40px; fill: rgba(255,255,255,.25); }
+    .card-body { padding: 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .card-title { font-size: 14px; font-weight: 700; color: var(--gray-900); line-height: 1.4; }
+    .card-date { font-size: 11px; color: var(--gray-400); display: flex; align-items: center; gap: 4px; }
+    .card-date svg { width: 11px; height: 11px; fill: currentColor; }
+    .card-desc { font-size: 12px; color: var(--gray-500); line-height: 1.5; flex: 1;
+                 display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-link { font-size: 11px; color: var(--blue); text-decoration: none; display: flex; align-items: center; gap: 3px; margin-top: 4px; }
+    .card-link:hover { text-decoration: underline; }
+    .card-link svg { width: 10px; height: 10px; fill: currentColor; }
+    .card-footer { padding: 10px 16px; border-top: 1px solid var(--gray-100); display: flex; gap: 6px; }
+    .card-footer .btn-icon {
+      display: flex; align-items: center; gap: 5px; padding: 5px 10px;
+      border-radius: var(--radius-sm); border: 1px solid var(--gray-200);
+      background: #fff; cursor: pointer; font-size: 12px; color: var(--gray-600);
+      transition: all var(--transition); font-family: inherit; font-weight: 500;
+    }
+    .card-footer .btn-icon svg { width: 13px; height: 13px; fill: currentColor; }
+    .card-footer .btn-icon:hover { background: var(--gray-100); border-color: var(--gray-300); }
+    .card-footer .btn-icon.edit:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+    .card-footer .btn-icon.delete:hover { background: var(--red-light); border-color: var(--red); color: var(--red); }
+    .card-footer .btn-icon.translate:hover { background: #f0fdf4; border-color: #16a34a; color: #16a34a; }
+    .card-footer .btn-icon.translate-partial:hover { background: #fefce8; border-color: #ca8a04; color: #ca8a04; }
+    .trans-badges { display: flex; gap: 3px; margin-top: 6px; flex-wrap: wrap; }
+    .trans-badge {
+      font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px;
+      background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0;
+    }
+    .trans-badge.missing { background: var(--gray-100); color: var(--gray-400); border-color: var(--gray-200); }
+
+    /* ===== TRANSLATION MODAL ===== */
+    .trans-lang-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--gray-200); margin-bottom: 18px; }
+    .trans-tab {
+      padding: 8px 20px; cursor: pointer; font-size: 13px; font-weight: 600;
+      border: none; background: none; color: var(--gray-500); border-bottom: 2px solid transparent;
+      margin-bottom: -2px; font-family: inherit; display: flex; align-items: center; gap: 6px;
+      transition: color var(--transition);
+    }
+    .trans-tab:hover { color: var(--gray-800); }
+    .trans-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+    .trans-tab .tab-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--gray-300);
+    }
+    .trans-tab .tab-dot.done { background: var(--green); }
+    .trans-panel { display: none; flex-direction: column; gap: 12px; }
+    .trans-panel.active { display: flex; }
+    .trans-orig {
+      background: var(--gray-50); border-radius: var(--radius-sm); padding: 10px 14px;
+      font-size: 12px; color: var(--gray-600); border: 1px solid var(--gray-200);
+      line-height: 1.5; direction: rtl;
+    }
+    .trans-orig .orig-label { font-size: 10px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; margin-bottom: 3px; }
+    .trans-auto-btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px;
+      background: var(--green); color: #fff; border: none; border-radius: var(--radius-sm);
+      font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: background var(--transition);
+    }
+    .trans-auto-btn:hover { background: #15803d; }
+    .trans-auto-btn:disabled { background: var(--gray-300); cursor: not-allowed; }
+    .trans-all-btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px;
+      background: var(--navy); color: #fff; border: none; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .trans-all-btn:hover { background: var(--navy-mid); }
+    .trans-all-btn:disabled { background: var(--gray-300); cursor: not-allowed; }
+    .trans-spinner-sm {
+      width: 12px; height: 12px; border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .new-badge {
+      font-size: 10px; font-weight: 700; background: var(--green); color: #fff;
+      padding: 2px 7px; border-radius: 20px; display: inline-block; margin-right: 6px;
+    }
+
+    /* ===== EMPTY STATE ===== */
+    #empty-state {
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      padding: 80px 20px; text-align: center; color: var(--gray-400);
+    }
+    #empty-state svg { width: 56px; height: 56px; fill: var(--gray-200); margin-bottom: 16px; }
+    #empty-state p { font-size: 14px; margin-bottom: 8px; color: var(--gray-500); }
+    #empty-state span { font-size: 12px; }
+
+    /* ===== GITHUB MODE BADGE ===== */
+    #gh-mode-badge {
+      display: none; font-size: 11px; background: #24292e; color: #fff;
+      padding: 3px 9px; border-radius: 20px; font-weight: 600; align-items: center; gap: 5px;
+    }
+    #gh-mode-badge.visible { display: inline-flex; }
+    #gh-mode-badge svg { width: 12px; height: 12px; fill: currentColor; }
+
+    /* ===== OFFLINE BANNER ===== */
+    #offline-banner {
+      display: flex; flex: 1; align-items: center; justify-content: center;
+    }
+
+    /* ===== NO SOURCE SELECTED ===== */
+    #no-source {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      flex: 1; padding: 80px 20px; text-align: center; color: var(--gray-400);
+    }
+    #no-source svg { width: 64px; height: 64px; fill: var(--gray-200); margin-bottom: 20px; }
+    #no-source h3 { font-size: 16px; color: var(--gray-500); margin-bottom: 6px; }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,.55); backdrop-filter: blur(3px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 14px; width: 100%; max-width: 560px;
+      max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 25px 50px rgba(0,0,0,.25);
+      animation: modalIn .2s ease;
+    }
+    @keyframes modalIn { from { opacity: 0; transform: scale(.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .modal-header {
+      padding: 20px 24px 16px; border-bottom: 1px solid var(--gray-200);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-header h2 { font-size: 17px; font-weight: 800; color: var(--gray-900); }
+    .modal-close {
+      width: 30px; height: 30px; border: none; background: var(--gray-100);
+      border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--gray-500); font-size: 16px; transition: background var(--transition);
+    }
+    .modal-close:hover { background: var(--gray-200); }
+    .modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--gray-200); display: flex; gap: 10px; justify-content: flex-start; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: 12px; font-weight: 700; color: var(--gray-600); }
+    .form-group input, .form-group textarea {
+      padding: 9px 12px; border: 1px solid var(--gray-300); border-radius: var(--radius-sm);
+      font-size: 13px; font-family: inherit; color: var(--gray-800); outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      background: #fff; resize: vertical;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+    .form-group textarea { min-height: 80px; }
+    .image-preview {
+      width: 100%; height: 130px; border-radius: var(--radius-sm); object-fit: cover;
+      border: 1px solid var(--gray-200); display: none; margin-top: 6px;
+    }
+    .image-preview.visible { display: block; }
+    .form-hint { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+
+    /* ===== TOAST ===== */
+    #toast-container {
+      position: fixed; bottom: 24px; left: 24px; z-index: 999;
+      display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+    }
+    .toast {
+      display: flex; align-items: center; gap: 10px; padding: 12px 16px;
+      border-radius: var(--radius); min-width: 260px; max-width: 380px;
+      box-shadow: var(--shadow-lg); font-size: 13px; font-weight: 600;
+      animation: toastIn .25s ease;
+      pointer-events: auto;
+    }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .toast.success { background: var(--green); color: #fff; }
+    .toast.error { background: var(--red); color: #fff; }
+    .toast.warning { background: var(--yellow); color: #fff; }
+    .toast.info { background: var(--blue); color: #fff; }
+    .toast svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+
+    /* ===== LOADING ===== */
+    .spinner {
+      width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.4);
+      border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gray-400); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 0px; }
+      #sidebar { display: none; }
+      #main { margin-right: 0; }
+      #cards-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ===== DRAG HINT ===== */
+    .card.dragging { opacity: .5; }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <div>
+      <h1>ממשק ניהול דשבורד משרד הבריאות</h1>
+      <div class="topbar-meta" id="last-saved">טוען נתונים...</div>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <span id="gh-mode-badge"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0112 6.8c.85.004 1.71.11 2.51.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0022 12c0-5.52-4.48-10-10-10z"/></svg> GitHub</span>
+    <span id="unsaved-badge">שינויים לא שמורים</span>
+    <button class="btn btn-success btn-sm" id="btn-save" onclick="saveData()">
+      <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      שמור שינויים
+    </button>
+    <button class="btn btn-primary btn-sm" id="btn-regen" onclick="regenerateDashboard()">
+      <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+      עדכן דשבורד
+    </button>
+    <button class="btn btn-ghost btn-sm" onclick="openGithubSettings()" id="btn-gh-settings" title="הגדרות GitHub">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+      <span id="gh-status-dot" style="width:7px;height:7px;border-radius:50%;background:#6b7280;display:inline-block;"></span>
+    </button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div id="sidebar-header">
+      <h2>מקורות מידע</h2>
+      <div id="sidebar-search">
+        <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="חיפוש מקור..." id="search-input" oninput="filterSources(this.value)">
+      </div>
+    </div>
+    <div id="source-list"></div>
+    <div id="sidebar-footer">
+      <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;" onclick="openAddSourceModal()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        הוסף מקור
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main id="main">
+    <!-- No source state -->
+    <div id="no-source">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <h3>בחר מקור מידע מהסרגל הצדדי</h3>
+      <p style="font-size:13px;">לצפייה ועריכה של הכרטיסיות</p>
+    </div>
+
+    <!-- Source view (hidden until source selected) -->
+    <div id="source-view" style="display:none; flex-direction:column; flex:1;">
+      <div id="main-header">
+        <div style="flex:1;">
+          <div class="source-title" id="active-source-name">שם המקור</div>
+          <div class="source-url" id="active-source-url"></div>
+        </div>
+        <span id="cards-count">0 כרטיסיות</span>
+        <button class="btn btn-primary btn-sm" onclick="openAddCardModal()">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          הוסף כרטיסייה
+        </button>
+      </div>
+      <div id="content-area">
+        <div id="cards-grid"></div>
+        <div id="empty-state">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          <p>אין כרטיסיות במקור זה</p>
+          <span>לחץ על "הוסף כרטיסייה" כדי להוסיף פריט חדש</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- EDIT CARD MODAL -->
+<div class="modal-overlay" id="modal-edit">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2 id="modal-edit-title">עריכת כרטיסייה</h2>
+      <button class="modal-close" onclick="closeModal('modal-edit')" aria-label="סגור">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="edit-title">כותרת</label>
+        <input type="text" id="edit-title" placeholder="כותרת הכרטיסייה">
+      </div>
+      <div class="form-group">
+        <label for="edit-desc">תיאור</label>
+        <textarea id="edit-desc" placeholder="תיאור קצר..." rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="edit-link">קישור</label>
+        <input type="url" id="edit-link" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label for="edit-image">קישור לתמונה</label>
+        <input type="url" id="edit-image" placeholder="https://... (URL של תמונה)" oninput="previewImage('edit-image', 'edit-preview')">
+        <img id="edit-preview" class="image-preview" alt="תצוגה מקדימה">
+        <span class="form-hint">הזן URL של תמונה לתצוגה מקדימה</span>
+      </div>
+      <div class="form-group">
+        <label for="edit-date">תאריך</label>
+        <input type="date" id="edit-date">
+      </div>
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" id="edit-isnew" style="width:15px;height:15px;">
+          <span>סמן כחדש (תצוגת "חדש")</span>
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveCard()">שמור כרטיסייה</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-edit')">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRANSLATION MODAL -->
+<div class="modal-overlay" id="modal-trans">
+  <div class="modal" role="dialog" aria-modal="true" style="max-width:560px;">
+    <div class="modal-header">
+      <h2 id="modal-trans-title">תרגום כרטיסייה</h2>
+      <button class="modal-close" onclick="closeModal('modal-trans')" aria-label="סגור">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Original Hebrew (read-only) -->
+      <div class="trans-orig" style="margin-bottom:16px;">
+        <div class="orig-label">מקור (עברית)</div>
+        <div id="trans-orig-title" style="font-weight:700;margin-bottom:4px;"></div>
+        <div id="trans-orig-desc" style="color:var(--gray-500);"></div>
+      </div>
+      <!-- Language tabs -->
+      <div class="trans-lang-tabs">
+        <button class="trans-tab active" onclick="switchTransTab('en')" id="tab-en">
+          <span class="tab-dot" id="dot-en"></span> English
+        </button>
+        <button class="trans-tab" onclick="switchTransTab('ar')" id="tab-ar">
+          <span class="tab-dot" id="dot-ar"></span> عربي
+        </button>
+        <button class="trans-tab" onclick="switchTransTab('ru')" id="tab-ru">
+          <span class="tab-dot" id="dot-ru"></span> Русский
+        </button>
+      </div>
+      <!-- EN panel -->
+      <div class="trans-panel active" id="panel-en">
+        <div class="form-group" style="margin:0;">
+          <label>כותרת (English)</label>
+          <input type="text" id="trans-en-title" placeholder="English title..." dir="ltr">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>תיאור (English)</label>
+          <textarea id="trans-en-desc" rows="3" placeholder="English description..." dir="ltr"></textarea>
+        </div>
+        <button class="trans-auto-btn" onclick="autoTranslate('en')" id="auto-en">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          תרגם אוטומטית מעברית
+        </button>
+      </div>
+      <!-- AR panel -->
+      <div class="trans-panel" id="panel-ar">
+        <div class="form-group" style="margin:0;">
+          <label>כותרת (عربي)</label>
+          <input type="text" id="trans-ar-title" placeholder="العنوان..." dir="rtl">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>תיאור (عربي)</label>
+          <textarea id="trans-ar-desc" rows="3" placeholder="الوصف..." dir="rtl"></textarea>
+        </div>
+        <button class="trans-auto-btn" onclick="autoTranslate('ar')" id="auto-ar">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          תרגם אוטומטית מעברית
+        </button>
+      </div>
+      <!-- RU panel -->
+      <div class="trans-panel" id="panel-ru">
+        <div class="form-group" style="margin:0;">
+          <label>כותרת (Русский)</label>
+          <input type="text" id="trans-ru-title" placeholder="Заголовок..." dir="ltr">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>תיאור (Русский)</label>
+          <textarea id="trans-ru-desc" rows="3" placeholder="Описание..." dir="ltr"></textarea>
+        </div>
+        <button class="trans-auto-btn" onclick="autoTranslate('ru')" id="auto-ru">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          תרגם אוטומטית מעברית
+        </button>
+      </div>
+    </div>
+    <div class="modal-footer" style="justify-content:space-between;">
+      <button class="trans-all-btn" onclick="autoTranslateAll()" id="trans-all-btn">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        תרגם לכל השפות
+      </button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-primary" onclick="saveTranslation()">שמור תרגומים</button>
+        <button class="btn btn-ghost" onclick="closeModal('modal-trans')">ביטול</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD SOURCE MODAL -->
+<div class="modal-overlay" id="modal-source">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2>הוסף מקור חדש</h2>
+      <button class="modal-close" onclick="closeModal('modal-source')" aria-label="סגור">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="src-name">שם המקור</label>
+        <input type="text" id="src-name" placeholder="לדוגמה: אתר מידע על חיסונים">
+      </div>
+      <div class="form-group">
+        <label for="src-url">כתובת URL</label>
+        <input type="url" id="src-url" placeholder="https://...">
+        <span class="form-hint">המקור ייווסף ריק — תוכל להוסיף כרטיסיות ידנית</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="addSource()">הוסף מקור</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-source')">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- GITHUB SETTINGS MODAL -->
+<div class="modal-overlay" id="modal-gh">
+  <div class="modal" role="dialog" aria-modal="true" style="max-width:480px;">
+    <div class="modal-header">
+      <h2>הגדרות GitHub</h2>
+      <button class="modal-close" onclick="closeModal('modal-gh')" aria-label="סגור">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--gray-500);margin-bottom:16px;line-height:1.6;">
+        חבר את ממשק הניהול ל-GitHub כדי לשמור שינויים ישירות ב-repo ולאפשר לצוות לעבוד יחד.
+      </p>
+      <div class="form-group">
+        <label>Personal Access Token (PAT)
+          <a href="https://github.com/settings/tokens/new?scopes=repo&description=moh-admin" target="_blank" style="font-size:11px;color:var(--blue);margin-right:6px;">צור PAT ←</a>
+        </label>
+        <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx" dir="ltr" autocomplete="off">
+        <span class="form-hint">נשמר רק בדפדפן שלך (localStorage). נדרש scope: <code>repo</code></span>
+      </div>
+      <div class="form-group">
+        <label>Repo (owner/name)</label>
+        <input type="text" id="gh-repo" value="erezfamily-cmyk/moh-dashboard" dir="ltr">
+      </div>
+      <div class="form-group">
+        <label>Branch</label>
+        <input type="text" id="gh-branch" value="master" dir="ltr">
+      </div>
+      <div class="form-group">
+        <label>נתיב קובץ הנתונים</label>
+        <input type="text" id="gh-filepath" value="scraped_data.json" dir="ltr">
+      </div>
+      <div id="gh-test-result" style="font-size:12px;padding:8px 12px;border-radius:6px;display:none;margin-top:8px;"></div>
+    </div>
+    <div class="modal-footer" style="justify-content:space-between;">
+      <button class="btn" style="background:#24292e;color:#fff;" onclick="testGithubConnection()">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0112 6.8c.85.004 1.71.11 2.51.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0022 12c0-5.52-4.48-10-10-10z"/></svg>
+        בדוק חיבור
+      </button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-primary" onclick="saveGithubSettings()">שמור הגדרות</button>
+        <button class="btn btn-ghost" onclick="closeModal('modal-gh')">ביטול</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<script>
+  // ===== STATE =====
+  let allData = {};          // { sourceName: { status, url, items: [...] } }
+  let activeSource = null;   // current source name
+  let editIndex = -1;        // -1 = add new, >= 0 = edit existing
+  let isDirty = false;
+
+  // ===== INIT =====
+  let serverAvailable = false;
+  let githubMode = false;
+  let ghFileSha = null;
+  let ghConfig = { token: '', repo: 'erezfamily-cmyk/moh-dashboard', branch: 'master', filePath: 'scraped_data.json' };
+
+  function loadGhConfig() {
+    try {
+      const saved = localStorage.getItem('moh_gh_config');
+      if (saved) ghConfig = { ...ghConfig, ...JSON.parse(saved) };
+    } catch(e) {}
+  }
+
+  async function init() {
+    loadGhConfig();
+    try {
+      const res = await fetch('/api/data', { signal: AbortSignal.timeout(2500) });
+      if (!res.ok) throw new Error('שגיאת שרת ' + res.status);
+      allData = await res.json();
+      serverAvailable = true;
+      renderSidebar();
+      const sources = Object.keys(allData);
+      if (sources.length > 0) selectSource(sources[0]);
+      setLastSaved();
+    } catch (e) {
+      // Try GitHub if token is configured
+      if (ghConfig.token) {
+        try {
+          await loadFromGithub();
+          return;
+        } catch(ghErr) {
+          // fall through to offline banner
+        }
+      }
+      showOfflineBanner();
+    }
+  }
+
+  function showOfflineBanner() {
+    document.getElementById('last-saved').textContent = 'שרת לא זמין';
+    const main = document.getElementById('main');
+    // Replace main content with offline banner
+    document.getElementById('no-source').style.display = 'none';
+    document.getElementById('source-view').style.display = 'none';
+    const banner = document.createElement('div');
+    banner.id = 'offline-banner';
+    main.appendChild(banner);
+    banner.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:20px;padding:40px;text-align:center;">
+        <div style="width:64px;height:64px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#dc2626" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div>
+          <div style="font-size:20px;font-weight:700;color:#1e293b;margin-bottom:8px;">השרת לא פועל</div>
+          <div style="font-size:14px;color:#64748b;max-width:400px;line-height:1.6;">
+            כדי להשתמש בממשק הניהול, יש להפעיל את השרת:
+          </div>
+        </div>
+        <div style="background:#f1f5f9;border-radius:10px;padding:16px 24px;text-align:right;width:100%;max-width:420px;font-size:13px;line-height:2;">
+          <div style="font-weight:700;margin-bottom:6px;color:#334155;">אפשרות 1 — לחץ פעמיים על:</div>
+          <code style="background:#0f172a;color:#4ade80;padding:6px 12px;border-radius:6px;font-size:13px;display:block;">run_admin.bat</code>
+          <div style="font-weight:700;margin:12px 0 6px;color:#334155;">אפשרות 2 — הרץ בטרמינל:</div>
+          <code style="background:#0f172a;color:#4ade80;padding:6px 12px;border-radius:6px;font-size:13px;display:block;">python admin_server.py</code>
+          <div style="margin-top:10px;color:#64748b;font-size:12px;">ואז פתח את הדפדפן לכתובת <strong>http://localhost:5050</strong></div>
+        </div>
+        <div style="border-top:1px solid #e2e8f0;padding-top:20px;width:100%;max-width:420px;display:flex;flex-direction:column;gap:10px;">
+          <button onclick="openGithubSettings()" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 18px;background:#24292e;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0112 6.8c.85.004 1.71.11 2.51.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0022 12c0-5.52-4.48-10-10-10z"/></svg>
+            התחבר עם GitHub
+          </button>
+          <div style="font-size:12px;color:#94a3b8;text-align:center;">או</div>
+          <label style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:8px 18px;background:#2563eb;color:#fff;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            פתח scraped_data.json ידנית (צפייה בלבד)
+            <input type="file" accept=".json" onchange="loadLocalFile(this)" style="display:none;">
+          </label>
+        </div>
+      </div>`
+    ;
+  }
+
+  function loadLocalFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        allData = JSON.parse(e.target.result);
+        serverAvailable = false;
+        // Disable save/regen buttons
+        document.getElementById('btn-save').disabled = true;
+        document.getElementById('btn-save').title = 'זמין רק כשהשרת פועל';
+        document.getElementById('btn-regen').disabled = true;
+        document.getElementById('btn-regen').title = 'זמין רק כשהשרת פועל';
+        document.getElementById('last-saved').textContent = 'מצב צפייה (ללא שרת)';
+        // Remove offline banner, restore normal UI
+        const banner = document.getElementById('offline-banner');
+        if (banner) banner.remove();
+        document.getElementById('no-source').style.display = '';
+        renderSidebar();
+        const sources = Object.keys(allData);
+        if (sources.length > 0) selectSource(sources[0]);
+        toast('הקובץ נטען בהצלחה (' + sources.length + ' מקורות)', 'success');
+      } catch (err) {
+        toast('שגיאה בקריאת הקובץ: ' + err.message, 'error');
+      }
+    };
+    reader.readAsText(file, 'utf-8');
+  }
+
+  // ===== GITHUB API =====
+  function ghHeaders() {
+    return { 'Authorization': 'Bearer ' + ghConfig.token, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github+json' };
+  }
+
+  async function loadFromGithub() {
+    const url = `https://api.github.com/repos/${ghConfig.repo}/contents/${ghConfig.filePath}?ref=${ghConfig.branch}`;
+    const res = await fetch(url, { headers: ghHeaders() });
+    if (!res.ok) throw new Error('GitHub API error ' + res.status);
+    const data = await res.json();
+    ghFileSha = data.sha;
+    allData = JSON.parse(atob(data.content.replace(/\n/g, '')));
+    githubMode = true;
+    serverAvailable = false;
+    document.getElementById('gh-mode-badge').classList.add('visible');
+    document.getElementById('gh-status-dot').style.background = '#22c55e';
+    document.getElementById('last-saved').textContent = 'מחובר ל-GitHub';
+    renderSidebar();
+    const sources = Object.keys(allData);
+    if (sources.length > 0) selectSource(sources[0]);
+  }
+
+  async function saveToGithub() {
+    // Re-fetch SHA in case it changed
+    const getUrl = `https://api.github.com/repos/${ghConfig.repo}/contents/${ghConfig.filePath}?ref=${ghConfig.branch}`;
+    const getRes = await fetch(getUrl, { headers: ghHeaders() });
+    if (getRes.ok) { const d = await getRes.json(); ghFileSha = d.sha; }
+
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(allData, null, 2))));
+    const putUrl = `https://api.github.com/repos/${ghConfig.repo}/contents/${ghConfig.filePath}`;
+    const body = { message: 'עדכון נתונים מממשק הניהול', content, sha: ghFileSha, branch: ghConfig.branch };
+    const res = await fetch(putUrl, { method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body) });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.message || res.status); }
+    const result = await res.json();
+    ghFileSha = result.content.sha;
+  }
+
+  async function triggerWorkflow() {
+    const url = `https://api.github.com/repos/${ghConfig.repo}/actions/workflows/regenerate.yml/dispatches`;
+    const res = await fetch(url, {
+      method: 'POST', headers: ghHeaders(),
+      body: JSON.stringify({ ref: ghConfig.branch })
+    });
+    if (!res.ok && res.status !== 204) throw new Error('workflow dispatch error ' + res.status);
+  }
+
+  function openGithubSettings() {
+    document.getElementById('gh-token').value = ghConfig.token || '';
+    document.getElementById('gh-repo').value = ghConfig.repo;
+    document.getElementById('gh-branch').value = ghConfig.branch;
+    document.getElementById('gh-filepath').value = ghConfig.filePath;
+    document.getElementById('gh-test-result').style.display = 'none';
+    openModal('modal-gh');
+  }
+
+  async function testGithubConnection() {
+    const token = document.getElementById('gh-token').value.trim();
+    const repo  = document.getElementById('gh-repo').value.trim();
+    const branch = document.getElementById('gh-branch').value.trim() || 'master';
+    const filePath = document.getElementById('gh-filepath').value.trim() || 'scraped_data.json';
+    const resultEl = document.getElementById('gh-test-result');
+    resultEl.style.display = 'block';
+    resultEl.style.background = '#f1f5f9';
+    resultEl.style.color = '#334155';
+    resultEl.textContent = 'בודק חיבור...';
+    try {
+      const res = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}`, {
+        headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+      });
+      if (res.ok) {
+        const d = await res.json();
+        const sizeKb = Math.round(d.size / 1024);
+        resultEl.style.background = '#dcfce7'; resultEl.style.color = '#15803d';
+        resultEl.textContent = `✓ חיבור תקין! קובץ נמצא (${sizeKb} KB)`;
+      } else if (res.status === 401) {
+        resultEl.style.background = '#fee2e2'; resultEl.style.color = '#dc2626';
+        resultEl.textContent = '✗ Token לא תקין או פג תוקף';
+      } else if (res.status === 404) {
+        resultEl.style.background = '#fee2e2'; resultEl.style.color = '#dc2626';
+        resultEl.textContent = '✗ Repo או קובץ לא נמצאו';
+      } else {
+        resultEl.style.background = '#fee2e2'; resultEl.style.color = '#dc2626';
+        resultEl.textContent = '✗ שגיאה ' + res.status;
+      }
+    } catch(e) {
+      resultEl.style.background = '#fee2e2'; resultEl.style.color = '#dc2626';
+      resultEl.textContent = '✗ שגיאת רשת: ' + e.message;
+    }
+  }
+
+  function saveGithubSettings() {
+    ghConfig.token    = document.getElementById('gh-token').value.trim();
+    ghConfig.repo     = document.getElementById('gh-repo').value.trim();
+    ghConfig.branch   = document.getElementById('gh-branch').value.trim() || 'master';
+    ghConfig.filePath = document.getElementById('gh-filepath').value.trim() || 'scraped_data.json';
+    localStorage.setItem('moh_gh_config', JSON.stringify(ghConfig));
+    closeModal('modal-gh');
+    if (ghConfig.token && !serverAvailable) {
+      document.getElementById('last-saved').textContent = 'מתחבר ל-GitHub...';
+      loadFromGithub()
+        .then(() => toast('מחובר ל-GitHub בהצלחה', 'success'))
+        .catch(e => toast('שגיאה: ' + e.message, 'error'));
+    } else {
+      toast('הגדרות נשמרו', 'success');
+    }
+  }
+
+  function setLastSaved() {
+    const now = new Date();
+    document.getElementById('last-saved').textContent =
+      'נשמר לאחרונה: ' + now.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function markDirty() {
+    isDirty = true;
+    document.getElementById('unsaved-badge').classList.add('visible');
+  }
+
+  function markClean() {
+    isDirty = false;
+    document.getElementById('unsaved-badge').classList.remove('visible');
+  }
+
+  // ===== SIDEBAR =====
+  let searchTerm = '';
+
+  function renderSidebar() {
+    const list = document.getElementById('source-list');
+    list.innerHTML = '';
+    const sources = Object.keys(allData).filter(s =>
+      !searchTerm || s.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    if (sources.length === 0) {
+      list.innerHTML = '<div style="padding:20px 16px;text-align:center;color:var(--gray-400);font-size:13px;">אין מקורות תואמים</div>';
+      return;
+    }
+    sources.forEach(name => {
+      const src = allData[name];
+      const count = (src.items || []).length;
+      const div = document.createElement('div');
+      div.className = 'source-item' + (name === activeSource ? ' active' : '');
+      div.innerHTML = `
+        <div class="source-dot"></div>
+        <span class="source-name">${escHtml(name)}</span>
+        <span class="source-badge">${count}</span>
+      `;
+      div.onclick = () => selectSource(name);
+      list.appendChild(div);
+    });
+  }
+
+  function filterSources(val) {
+    searchTerm = val;
+    renderSidebar();
+  }
+
+  function selectSource(name) {
+    activeSource = name;
+    renderSidebar();
+    renderCards();
+    document.getElementById('no-source').style.display = 'none';
+    document.getElementById('source-view').style.display = 'flex';
+    const src = allData[name];
+    document.getElementById('active-source-name').textContent = name;
+    document.getElementById('active-source-url').textContent = src.url || '';
+    updateCardsCount();
+  }
+
+  function updateCardsCount() {
+    if (!activeSource) return;
+    const count = (allData[activeSource].items || []).length;
+    document.getElementById('cards-count').textContent = count + ' כרטיסיות';
+  }
+
+  // ===== CARDS =====
+  function renderCards() {
+    const grid = document.getElementById('cards-grid');
+    const empty = document.getElementById('empty-state');
+    grid.innerHTML = '';
+    if (!activeSource) return;
+    const items = allData[activeSource].items || [];
+    if (items.length === 0) {
+      empty.style.display = 'flex';
+      grid.style.display = 'none';
+      return;
+    }
+    empty.style.display = 'none';
+    grid.style.display = 'grid';
+    items.forEach((item, idx) => {
+      grid.appendChild(buildCard(item, idx));
+    });
+  }
+
+  function buildCard(item, idx) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.idx = idx;
+
+    // Image
+    let imageHtml;
+    if (item.image_url) {
+      imageHtml = `<img class="card-image" src="${escAttr(item.image_url)}" alt="" loading="lazy"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="card-image-placeholder" style="display:none;">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>`;
+    } else {
+      imageHtml = `<div class="card-image-placeholder">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </div>`;
+    }
+
+    const dateHtml = item.date
+      ? `<div class="card-date"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${escHtml(item.date)}</div>`
+      : '';
+
+    const newBadge = item.is_new ? '<span class="new-badge">חדש</span>' : '';
+    const desc = item.description || item.full_text || '';
+    const t = item.translations || {};
+    const transCount = ['en','ar','ru'].filter(l => t[l] && (t[l].title || t[l].description)).length;
+    const linkHtml = item.link
+      ? `<a class="card-link" href="${escAttr(item.link)}" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          פתח קישור</a>`
+      : '';
+
+    card.innerHTML = `
+      ${imageHtml}
+      <div class="card-body">
+        <div class="card-title">${newBadge}${escHtml(item.title || '(ללא כותרת)')}</div>
+        ${dateHtml}
+        ${desc ? `<div class="card-desc">${escHtml(desc)}</div>` : ''}
+        ${linkHtml}
+      </div>
+      <div class="card-footer">
+        <button class="btn-icon edit" onclick="openEditModal(${idx})" title="ערוך">
+          <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          ערוך
+        </button>
+        <button class="btn-icon translate ${transCount > 0 ? (transCount === 3 ? '' : 'translate-partial') : ''}" onclick="openTranslationModal(${idx})" title="תרגום">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          ${transCount === 0 ? 'תרגום' : transCount === 3 ? 'תורגם' : transCount + '/3'}
+        </button>
+        <button class="btn-icon delete" onclick="deleteCard(${idx})" title="מחק">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+          מחק
+        </button>
+      </div>
+    `;
+    return card;
+  }
+
+  // ===== EDIT MODAL =====
+  function openEditModal(idx) {
+    editIndex = idx;
+    const item = allData[activeSource].items[idx];
+    document.getElementById('modal-edit-title').textContent = 'עריכת כרטיסייה';
+    document.getElementById('edit-title').value = item.title || '';
+    document.getElementById('edit-desc').value = item.description || item.full_text || '';
+    document.getElementById('edit-link').value = item.link || '';
+    document.getElementById('edit-image').value = item.image_url || '';
+    document.getElementById('edit-date').value = item.date || '';
+    document.getElementById('edit-isnew').checked = !!item.is_new;
+    // image preview
+    const prev = document.getElementById('edit-preview');
+    if (item.image_url) {
+      prev.src = item.image_url;
+      prev.classList.add('visible');
+    } else {
+      prev.src = '';
+      prev.classList.remove('visible');
+    }
+    openModal('modal-edit');
+  }
+
+  function openAddCardModal() {
+    if (!activeSource) { toast('בחר מקור תחילה', 'warning'); return; }
+    editIndex = -1;
+    document.getElementById('modal-edit-title').textContent = 'הוסף כרטיסייה חדשה';
+    document.getElementById('edit-title').value = '';
+    document.getElementById('edit-desc').value = '';
+    document.getElementById('edit-link').value = '';
+    document.getElementById('edit-image').value = '';
+    document.getElementById('edit-date').value = '';
+    document.getElementById('edit-isnew').checked = false;
+    const prev = document.getElementById('edit-preview');
+    prev.src = ''; prev.classList.remove('visible');
+    openModal('modal-edit');
+  }
+
+  function saveCard() {
+    const title = document.getElementById('edit-title').value.trim();
+    if (!title) { toast('נא להזין כותרת', 'warning'); document.getElementById('edit-title').focus(); return; }
+
+    const item = {
+      title,
+      description: document.getElementById('edit-desc').value.trim(),
+      link: document.getElementById('edit-link').value.trim(),
+      image_url: document.getElementById('edit-image').value.trim(),
+      date: document.getElementById('edit-date').value,
+      is_new: document.getElementById('edit-isnew').checked
+    };
+    // Remove empty fields
+    Object.keys(item).forEach(k => { if (item[k] === '' || item[k] === false) delete item[k]; });
+
+    if (editIndex === -1) {
+      // Add new
+      if (!allData[activeSource].items) allData[activeSource].items = [];
+      allData[activeSource].items.unshift(item);
+      toast('כרטיסייה חדשה נוספה', 'success');
+    } else {
+      // Update existing — preserve full_text if not changed
+      const existing = allData[activeSource].items[editIndex];
+      const updated = Object.assign({}, existing, item);
+      // If description was provided, remove full_text duplication; keep full_text if desc empty
+      if (!item.description && existing.full_text) updated.full_text = existing.full_text;
+      allData[activeSource].items[editIndex] = updated;
+      toast('הכרטיסייה עודכנה', 'success');
+    }
+
+    closeModal('modal-edit');
+    renderCards();
+    renderSidebar();
+    updateCardsCount();
+    markDirty();
+  }
+
+  // ===== TRANSLATION MODAL =====
+  let transCardIdx = -1;
+  const LANGS = { en: 'English', ar: 'عربي', ru: 'Русский' };
+  let activeLang = 'en';
+
+  function openTranslationModal(idx) {
+    transCardIdx = idx;
+    const item = allData[activeSource].items[idx];
+    document.getElementById('modal-trans-title').textContent = 'תרגום: ' + (item.title || '').slice(0, 40) + (item.title && item.title.length > 40 ? '…' : '');
+    document.getElementById('trans-orig-title').textContent = item.title || '(ללא כותרת)';
+    document.getElementById('trans-orig-desc').textContent = (item.description || item.full_text || '').slice(0, 200);
+    const trans = item.translations || {};
+    ['en','ar','ru'].forEach(lang => {
+      const d = trans[lang] || {};
+      document.getElementById(`trans-${lang}-title`).value = d.title || '';
+      document.getElementById(`trans-${lang}-desc`).value = d.description || '';
+      updateTabDot(lang, !!(d.title || d.description));
+    });
+    activeLang = 'en';
+    switchTransTab('en');
+    openModal('modal-trans');
+  }
+
+  function switchTransTab(lang) {
+    activeLang = lang;
+    ['en','ar','ru'].forEach(l => {
+      document.getElementById('tab-' + l).classList.toggle('active', l === lang);
+      document.getElementById('panel-' + l).classList.toggle('active', l === lang);
+    });
+  }
+
+  function updateTabDot(lang, done) {
+    const dot = document.getElementById('dot-' + lang);
+    if (dot) dot.classList.toggle('done', done);
+  }
+
+  async function autoTranslate(lang) {
+    const item = allData[activeSource].items[transCardIdx];
+    const titleHe = item.title || '';
+    const descHe = item.description || item.full_text || '';
+    const btn = document.getElementById('auto-' + lang);
+    btn.disabled = true;
+    btn.innerHTML = '<span class="trans-spinner-sm"></span> מתרגם...';
+    try {
+      const [tTitle, tDesc] = await Promise.all([
+        titleHe ? _gtrans(titleHe, lang) : Promise.resolve(''),
+        descHe  ? _gtrans(descHe.slice(0, 500), lang) : Promise.resolve('')
+      ]);
+      if (tTitle) document.getElementById(`trans-${lang}-title`).value = tTitle;
+      if (tDesc)  document.getElementById(`trans-${lang}-desc`).value  = tDesc;
+      updateTabDot(lang, !!(tTitle || tDesc));
+      toast('תורגם לשפה: ' + LANGS[lang], 'success');
+    } catch (e) {
+      toast('שגיאת תרגום: ' + e.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg> תרגם אוטומטית מעברית';
+    }
+  }
+
+  async function autoTranslateAll() {
+    const btn = document.getElementById('trans-all-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="trans-spinner-sm"></span> מתרגם לכל השפות...';
+    try {
+      await Promise.all(['en','ar','ru'].map(l => autoTranslate(l)));
+      toast('תורגם לכל השפות בהצלחה', 'success');
+    } catch(e) {
+      toast('שגיאה בתרגום: ' + e.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg> תרגם לכל השפות';
+    }
+  }
+
+  function saveTranslation() {
+    const item = allData[activeSource].items[transCardIdx];
+    if (!item.translations) item.translations = {};
+    ['en','ar','ru'].forEach(lang => {
+      const title = document.getElementById(`trans-${lang}-title`).value.trim();
+      const desc  = document.getElementById(`trans-${lang}-desc`).value.trim();
+      if (title || desc) {
+        item.translations[lang] = { title, description: desc };
+      } else {
+        delete item.translations[lang];
+      }
+    });
+    if (Object.keys(item.translations).length === 0) delete item.translations;
+    closeModal('modal-trans');
+    renderCards();
+    markDirty();
+    toast('תרגומים נשמרו', 'success');
+  }
+
+  // ===== GOOGLE TRANSLATE (free endpoint) =====
+  async function _gtrans(text, tl) {
+    const url = 'https://translate.googleapis.com/translate_a/single'
+      + '?client=gtx&sl=he&tl=' + encodeURIComponent(tl)
+      + '&dt=t&q=' + encodeURIComponent(text);
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('translate error ' + resp.status);
+    const data = await resp.json();
+    return data[0].map(x => x[0]).join('');
+  }
+
+  // ===== DELETE =====
+  function deleteCard(idx) {
+    const item = allData[activeSource].items[idx];
+    const title = item.title || 'כרטיסייה זו';
+    if (!confirm(`האם למחוק את "${title}"?\nלא ניתן לשחזר לאחר השמירה.`)) return;
+    allData[activeSource].items.splice(idx, 1);
+    renderCards();
+    renderSidebar();
+    updateCardsCount();
+    markDirty();
+    toast('הכרטיסייה נמחקה', 'info');
+  }
+
+  // ===== ADD SOURCE =====
+  function openAddSourceModal() {
+    document.getElementById('src-name').value = '';
+    document.getElementById('src-url').value = '';
+    openModal('modal-source');
+  }
+
+  function addSource() {
+    const name = document.getElementById('src-name').value.trim();
+    const url = document.getElementById('src-url').value.trim();
+    if (!name) { toast('נא להזין שם מקור', 'warning'); document.getElementById('src-name').focus(); return; }
+    if (allData[name]) { toast('מקור בשם זה כבר קיים', 'error'); return; }
+    allData[name] = { status: 'ok', url: url || '', error: '', items: [] };
+    closeModal('modal-source');
+    renderSidebar();
+    selectSource(name);
+    markDirty();
+    toast('המקור נוסף', 'success');
+  }
+
+  // ===== SAVE =====
+  async function saveData() {
+    const btn = document.getElementById('btn-save');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> שומר...';
+    try {
+      if (githubMode) {
+        await saveToGithub();
+        markClean();
+        setLastSaved();
+        toast('נשמר ב-GitHub בהצלחה', 'success');
+        btn.disabled = false;
+        btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> שמור שינויים`;
+        return;
+      }
+      const res = await fetch('/api/data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(allData)
+      });
+      const json = await res.json();
+      if (json.ok) {
+        markClean();
+        setLastSaved();
+        toast('הנתונים נשמרו בהצלחה', 'success');
+      } else {
+        toast('שגיאה בשמירה', 'error');
+      }
+    } catch (e) {
+      toast('שגיאת רשת: ' + e.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> שמור שינויים`;
+    }
+  }
+
+  // ===== REGENERATE =====
+  async function regenerateDashboard() {
+    if (isDirty) {
+      if (!confirm('יש שינויים לא שמורים. האם לשמור לפני עדכון הדשבורד?')) return;
+      await saveData();
+    }
+    const btn = document.getElementById('btn-regen');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> מעדכן...';
+    try {
+      if (githubMode) {
+        await triggerWorkflow();
+        toast('GitHub Actions הופעל — הדשבורד יתעדכן בעוד כדקה', 'success');
+      } else {
+        const res = await fetch('/api/regenerate', { method: 'POST' });
+        const json = await res.json();
+        if (json.ok) {
+          toast(json.message || 'הדשבורד עודכן בהצלחה', 'success');
+        } else {
+          toast('שגיאה: ' + (json.error || 'לא ידוע'), 'error');
+          console.error('Regenerate error:', json.error);
+        }
+      }
+    } catch (e) {
+      toast('שגיאת רשת: ' + e.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg> עדכן דשבורד`;
+    }
+  }
+
+  // ===== MODAL HELPERS =====
+  function openModal(id) {
+    document.getElementById(id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Close modal on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) closeModal(overlay.id);
+    });
+  });
+
+  // Close modal on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.open').forEach(el => closeModal(el.id));
+    }
+  });
+
+  // ===== IMAGE PREVIEW =====
+  function previewImage(inputId, previewId) {
+    const url = document.getElementById(inputId).value.trim();
+    const img = document.getElementById(previewId);
+    if (url) {
+      img.src = url;
+      img.classList.add('visible');
+      img.onerror = () => img.classList.remove('visible');
+    } else {
+      img.src = '';
+      img.classList.remove('visible');
+    }
+  }
+
+  // ===== TOAST =====
+  function toast(msg, type = 'info') {
+    const icons = {
+      success: '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',
+      error:   '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+      warning: '<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+      info:    '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+    };
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.innerHTML = (icons[type] || icons.info) + `<span>${escHtml(msg)}</span>`;
+    document.getElementById('toast-container').appendChild(el);
+    setTimeout(() => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(8px)';
+      el.style.transition = 'opacity .3s, transform .3s';
+      setTimeout(() => el.remove(), 300);
+    }, 3200);
+  }
+
+  // ===== UTILS =====
+  function escHtml(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function escAttr(s) {
+    if (!s) return '';
+    return String(s).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // Warn before leaving with unsaved changes
+  window.addEventListener('beforeunload', e => {
+    if (isDirty) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
+  // ===== START =====
+  init();
+</script>
+</body>
+</html>

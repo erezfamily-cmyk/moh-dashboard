@@ -2243,26 +2243,52 @@ def generate(data):
     _applyTranslations(lang, cards);
   }}
 
+  // Returns a localized URL for known multilingual sites, or original for Hebrew-only sites.
+  // Currently gov.il supports /he/ /en/ /ar/ /ru/ path segments.
+  function _localizeLink(url, lang) {{
+    if (!url || lang === 'he') return url;
+    // gov.il: https://www.gov.il/he/... → /en/ /ar/ /ru/
+    var govIl = url.match(/^(https?:\\/\\/[^/]*\\.gov\\.il\\/)(he|en|ar|ru)(\\/.*)?$/i);
+    if (govIl) {{
+      var seg = {{ar:'ar', en:'en', ru:'ru'}}[lang] || 'he';
+      return govIl[1] + seg + (govIl[3] || '');
+    }}
+    // All other health.gov.il sites are Hebrew-only — return original
+    return url;
+  }}
+
   function _applyTranslations(lang, cards) {{
     var cache = _transCache[lang] || {{}};
     (cards || document.querySelectorAll('.news-card')).forEach(function(card) {{
-      var titleEl = card.querySelector('.card-title-link');
-      var descEl  = card.querySelector('.card-desc');
+      var titleEl   = card.querySelector('.card-title-link');
+      var descEl    = card.querySelector('.card-desc');
+      var readMore  = card.querySelector('.btn-read-more');
       var t = card.dataset.title || '';
       var d = card.dataset.desc  || '';
+      var origLink  = card.dataset.link || '';
+      var localLink = _localizeLink(origLink, lang);
+
       if (titleEl && cache[t]) titleEl.textContent = cache[t];
       if (descEl  && cache[d]) descEl.textContent  = cache[d];
+
+      // Update hrefs to localized page (or keep original if no translation available)
+      if (titleEl && titleEl.tagName === 'A') titleEl.href = localLink || origLink;
+      if (readMore) readMore.href = localLink || origLink;
     }});
   }}
 
   function _restoreHebrew() {{
     _currentTransLang = 'he';
     document.querySelectorAll('.news-card').forEach(function(card) {{
-      var titleEl = card.querySelector('.card-title-link');
-      var descEl  = card.querySelector('.card-desc');
+      var titleEl  = card.querySelector('.card-title-link');
+      var descEl   = card.querySelector('.card-desc');
+      var readMore = card.querySelector('.btn-read-more');
+      var origLink = card.dataset.link || '';
       card.classList.remove('card-translating');
       if (titleEl && card.dataset.title) titleEl.textContent = card.dataset.title;
       if (descEl  && card.dataset.desc)  descEl.textContent  = card.dataset.desc;
+      if (titleEl && titleEl.tagName === 'A') titleEl.href = origLink;
+      if (readMore) readMore.href = origLink;
     }});
   }}
 
