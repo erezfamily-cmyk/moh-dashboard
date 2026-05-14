@@ -8,7 +8,7 @@ from datetime import datetime
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA_FILE = os.path.join(ROOT, 'scraped_data.json')
-OUTPUT_FILE = os.path.join(ROOT, 'dashboard.html')
+OUTPUT_FILE = os.path.join(ROOT, 'index.html')
 
 # Site-specific gradient fallbacks (when no og:image)
 SITE_GRADIENTS = {

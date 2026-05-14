@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
     paths:
-      - 'dashboard.html'
+      - 'index.html'
       - 'admin.html'
   workflow_dispatch:
 
@@ -30,7 +30,7 @@ jobs:
       - name: Create pages directory
         run: |
           mkdir -p _site
-          cp dashboard.html _site/index.html
+          cp index.html _site/index.html
           cp admin.html _site/admin.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
